@@ -1,5 +1,5 @@
 import { defineNuxtPlugin } from '#app'
-import Toast, { useToast } from 'vue-toastification'
+import Toast from 'vue-toastification'
 import 'vue-toastification/dist/index.css'
 
 export default defineNuxtPlugin((nuxtApp) => {
@@ -11,7 +11,4 @@ export default defineNuxtPlugin((nuxtApp) => {
         draggable: true,
         transition: 'Vue-Toastification__fade',
     })
-
-    const toast = useToast()
-    nuxtApp.provide('toast', toast)
 })
