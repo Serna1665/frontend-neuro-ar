@@ -1,13 +1,14 @@
 <template>
     <v-app>
-        <v-navigation-drawer v-model="drawer" app>
+        <v-navigation-drawer v-model="drawer" app permanent>
             <v-col cols="12" class="d-flex justify-center">
-                <v-img src="/imagenes/icono-logo.png" contain max-height="150" max-width="250"></v-img>
+                <v-img src="/imagenes/neuroar.png" contain max-height="150" max-width="250"></v-img>
             </v-col>
 
             <v-list>
                 <template v-for="item in menu" :key="item.title">
-                    <v-list-group v-if="item.children && item.children.length" :value="isActive(item)">
+                    <v-list-group v-if="item.children && item.children.length" :value="openGroups[item.title]"
+                        @click="toggleGroup(item.title)">
                         <template v-slot:activator="{ props }">
                             <v-list-item v-bind="props">
                                 <template v-slot:prepend>
@@ -49,50 +50,45 @@
 
         <v-app-bar app>
             <v-app-bar-nav-icon @click="drawer = !drawer"></v-app-bar-nav-icon>
-
-            <v-img src="/imagenes/icono-logo.png" contain max-height="50" max-width="50" class="ml-3"></v-img>
-
-            <strong class="ml-5">
-                Bienvenido a NeuroAR - {{ user?.name || "Usuario Desconocido" }}
-            </strong>
+            <v-spacer></v-spacer>
+            <div class="d-flex align-center">
+                <strong>Bienvenido a NeuroAR - {{ user?.name || "Usuario Desconocido" }}</strong>
+            </div>
+            <v-spacer></v-spacer>
+            <v-img src="/imagenes/neuroar.png" contain max-height="150" max-width="50"></v-img>
         </v-app-bar>
 
         <v-main>
-            <router-view></router-view>
+            <nuxt-page />
         </v-main>
     </v-app>
 </template>
 
 <script>
-import { useAuthStore } from '@/stores/auth'
-import { computed } from 'vue'
-import { useNuxtApp } from '#app'
+import { useAuthStore } from "@/stores/auth";
+import { reactive, computed } from "vue";
+import { useNuxtApp } from "#app";
 
 export default {
     data() {
         return {
             drawer: true,
-            activeItem: null
+            openGroups: reactive({}),
         };
     },
     computed: {
         user() {
-            const authStore = useAuthStore()
-            return authStore.user
+            const authStore = useAuthStore();
+            return authStore.user;
         },
         menu() {
-            return useNuxtApp().$menu // Obtenemos el menú filtrado
-        }
+            return useNuxtApp().$menu;
+        },
     },
     methods: {
-        isActive(item) {
-            return item.children?.some(sub => sub.to === this.activeItem);
-        }
-    },
-    watch: {
-        '$route.path'(newPath) {
-            this.activeItem = newPath;
-        }
+        toggleGroup(groupTitle) {
+            this.$set(this.openGroups, groupTitle, !this.openGroups[groupTitle]);
+        },
     },
 };
 </script>

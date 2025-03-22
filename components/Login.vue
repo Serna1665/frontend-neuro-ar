@@ -102,8 +102,8 @@ export default {
                 // Guardar en Pinia y localStorage
                 authStore.setUser(user, token)
 
-                this.$toast.success("¡Sesión iniciada correctamente!")
                 this.$router.push("/inicio")
+                this.$toast.success("¡Sesión iniciada correctamente!")
             } catch (error) {
                 const errorData = error.response.data
 
