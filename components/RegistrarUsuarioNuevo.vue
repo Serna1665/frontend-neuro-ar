@@ -9,7 +9,7 @@
                         <strong class="ml-4 text-h5 font-weight-bold">Registro de usuarios</strong>
                     </div>
 
-                    <v-btn icon color="red" @click="$router.push('/'), limpiarFormulario()">
+                    <v-btn icon color="primary" @click="$router.push('/'), limpiarFormulario()">
                         <v-icon>mdi-arrow-left</v-icon>
                     </v-btn>
                 </div>
@@ -85,7 +85,7 @@
                     </v-row>
                 </v-form>
             </v-container>
-            <v-btn color="blue" block @click="registrarUsuarioNuevo()" :loading="loading">Registrar</v-btn>
+            <v-btn color="primary" block @click="registrarUsuarioNuevo()" :loading="loading">Registrar</v-btn>
         </v-card>
     </div>
 </template>
