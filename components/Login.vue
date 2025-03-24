@@ -52,7 +52,7 @@
 
                             <!-- Enlace: Olvidé mi contraseña -->
                             <v-col cols="12" class="text-center">
-                                <NuxtLink to="/recuperar" class="text-caption">
+                                <NuxtLink to="" class="text-caption">
                                     ¿Has olvidado tu contraseña?
                                 </NuxtLink>
                             </v-col>

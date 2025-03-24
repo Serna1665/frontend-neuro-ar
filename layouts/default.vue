@@ -87,7 +87,7 @@ export default {
     },
     methods: {
         toggleGroup(groupTitle) {
-            this.$set(this.openGroups, groupTitle, !this.openGroups[groupTitle]);
+            this.openGroups[groupTitle] = !this.openGroups[groupTitle];
         },
     },
 };
