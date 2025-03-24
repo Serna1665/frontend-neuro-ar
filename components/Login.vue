@@ -1,16 +1,14 @@
 <template>
     <v-app>
-        <v-container fluid class="full-height pa-0 d-none d-md-flex">
+        <v-container fluid class="full-height pa-0">
             <v-row class="full-height ma-0" align="stretch" justify="center" dense>
-                <v-col cols="4" class="left-col pa-0 position-relative">
+                <v-col cols="4" class="left-col pa-0 position-relative d-none d-md-flex">
                     <div class="semi-circulo"></div>
                     <div class="crear-cuenta">
                         <h2 class="text-h5 font-weight-bold">¿No tienes cuenta?</h2>
                         <p>Únete a NeuroAR en segundos.</p>
                         <NuxtLink to="/registro" class="boton-crear-cuenta">
-                            <v-btn color="white" variant="tonal" block>
-                                Crear cuenta
-                            </v-btn>
+                            <v-btn color="white" variant="tonal" block>Crear cuenta</v-btn>
                         </NuxtLink>
                     </div>
                     <v-img src="/imagenes/andres_login.png" alt="Hombre con VR" :height="'100%'"
@@ -43,7 +41,7 @@
                                 </v-text-field>
                             </v-col>
 
-                            <!-- Campo: Número de Documento (Solo si es necesario) -->
+                            <!-- Campo: Número de Documento -->
                             <v-col cols="12" v-if="mostrarNumeroDocumento">
                                 <v-text-field label="Número de Documento" variant="outlined"
                                     prepend-inner-icon="mdi-card-account-details"
@@ -69,8 +67,7 @@
                     </v-form>
                 </v-col>
 
-                <!-- Columna Derecha: Niño -->
-                <v-col cols="4" class="right-col pa-0 d-flex align-center justify-center">
+                <v-col cols="4" class="right-col pa-0 d-none d-md-flex align-center justify-center">
                     <v-img class="nino-img" src="/imagenes/nino_login.png" alt="Niño con VR" :height="'100%'"></v-img>
                 </v-col>
             </v-row>
