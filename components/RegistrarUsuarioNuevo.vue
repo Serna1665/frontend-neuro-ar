@@ -58,7 +58,7 @@
                             </v-autocomplete>
                         </v-col>
                         <v-col cols="12" md="4">
-                            <v-autocomplete label="Oficio" variant="outlined" :items="['Desarrollador']"
+                            <v-autocomplete label="Oficio" variant="outlined" :items="oficios" item-value="id" item-title="nombre"
                                 hint="Selecciona profesión" :rules="[rules.required]" v-model="usuarioNuevo.oficio_id">
                             </v-autocomplete>
                         </v-col>
@@ -102,11 +102,14 @@ export default {
                 min: value => (value && value.length >= 6) || 'Mínimo 6 caracteres'
             },
             usuarioNuevo: {},
-            loading: false
+            loading: false,
+            oficios: []
         };
     },
 
-    mounted() { },
+    mounted() { 
+        this.listarOficios()
+    },
 
     methods: {
 
@@ -141,7 +144,19 @@ export default {
 
         limpiarFormulario() {
             this.usuarioNuevo = {}
-        }
+        },
+
+        async listarOficios() {
+                this.loading = true
+                try {
+                    const response = await this.$axios.get('oficios/listar');
+                    this.oficios = response.data;
+                } catch {
+                    console.error('Error al obtener los oficios');
+                } finally {
+                    this.loading = false
+                }
+            },
 
     },
 };

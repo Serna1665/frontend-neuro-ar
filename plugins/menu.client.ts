@@ -67,7 +67,7 @@ export default defineNuxtPlugin((nuxtApp) => {
                     title: 'Oficios',
                     icon: 'mdi-shield-account',
                     permission: '',
-                    to: '/roles'
+                    to: '/oficios'
                 },
                 {
                     title: 'Pacientes',
