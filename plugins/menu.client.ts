@@ -3,32 +3,32 @@ import { defineNuxtPlugin } from '#app'
 export default defineNuxtPlugin((nuxtApp) => {
     const menu_items = [
         {
-            title: 'Resultados',
-            icon: 'mdi-file-chart',
-            permission: 'remo',
+            title: 'Inicio',
+            icon: 'mdi-home',
+            permission: '',
             children: [
                 {
-                    title: 'Test 1',
-                    icon: 'mdi-clipboard-text',
-                    permission: 'remo',
-                    to: '/resultados'
-                }
+                    title: 'Inicio',
+                    icon: 'mdi-home-circle',
+                    permission: '',
+                    to: '/inicio'
+                },
+                {
+                    title: 'Gestor de contenido',
+                    icon: 'mdi-file-document-edit',
+                    permission: '',
+                    to: ''
+                },
             ]
         },
         {
             title: 'Reportes',
             icon: 'mdi-chart-bar',
-            permission: '', 
+            permission: '',
             children: [
                 {
-                    title: 'Usuarios',
-                    icon: 'mdi-account-group',
-                    permission: '',
-                    to: '/usuarios'
-                },
-                {
                     title: 'Resultados',
-                    icon: 'mdi-shield-account',
+                    icon: 'mdi-chart-areaspline',
                     permission: '',
                     to: '/resultados'
                 }
@@ -37,12 +37,37 @@ export default defineNuxtPlugin((nuxtApp) => {
         {
             title: 'Configuración',
             icon: 'mdi-cog',
-            permission: 'view_settings',
+            permission: '',
+            children: [
+                {
+                    title: 'Pacientes',
+                    icon: 'mdi-account-multiple',
+                    permission: '',
+                    to: '/pacientes'
+                },
+                {
+                    title: 'Empresas',
+                    icon: 'mdi-office-building',
+                    permission: '',
+                    to: '/empresas'
+                },
+                {
+                    title: 'Oficios',
+                    icon: 'mdi-briefcase-variant',
+                    permission: '',
+                    to: '/oficios'
+                },
+            ]
+        },
+        {
+            title: 'Admin',
+            icon: 'mdi-account-tie',
+            permission: '',
             children: [
                 {
                     title: 'Usuarios',
                     icon: 'mdi-account-group',
-                    permission: 'manage_users',
+                    permission: '',
                     to: '/usuarios'
                 },
                 {
@@ -53,33 +78,15 @@ export default defineNuxtPlugin((nuxtApp) => {
                 },
                 {
                     title: 'Permisos',
-                    icon: 'mdi-shield-account',
+                    icon: 'mdi-lock-open-outline',
                     permission: '',
-                    to: '/roles'
+                    to: '/permisos'
                 },
-                {
-                    title: 'Empresas',
-                    icon: 'mdi-shield-account',
-                    permission: '',
-                    to: '/roles'
-                },
-                {
-                    title: 'Oficios',
-                    icon: 'mdi-shield-account',
-                    permission: '',
-                    to: '/oficios'
-                },
-                {
-                    title: 'Pacientes',
-                    icon: 'mdi-shield-account',
-                    permission: '',
-                    to: '/roles'
-                }
             ]
-        }
+        },
     ]
 
-    let user_permissions: string[] = []
+    let user_permissions = []
     if (process.client) {
         const user = localStorage.getItem('user')
         if (user) {
@@ -92,7 +99,6 @@ export default defineNuxtPlugin((nuxtApp) => {
         }
     }
 
-    // Filtrar menú según permisos del usuario
     const filtered_menu = menu_items
         .map(item => {
             const has_permission = !item.permission || user_permissions.includes(item.permission)
