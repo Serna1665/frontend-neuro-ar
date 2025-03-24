@@ -12,7 +12,7 @@
             </v-card-title>
             <v-container fluid>
 
-                <v-data-table :search="buscar" :items="oficios" :headers="headers" :loading="loading">
+                <v-data-table :search="buscar" :items="oficios" :headers="headers" :loading="loading" loading-text="Cargando datos..." no-data-text="Sin oficios registrados">
                     <template v-slot:top>
                         <v-row class="d-flex align-center justify-space-between">
                             <v-col cols="3">

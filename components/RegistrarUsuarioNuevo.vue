@@ -124,17 +124,24 @@ export default {
             try {
                 const data = {
                     ...this.usuarioNuevo,
-                    user_id: 1,
                     municipio_id: 1,
                     departamento_id: 1,
                     empresa_id: 2,
-                    oficio_id:1,
                     tipo_documento_id: 1
 
                 }
                 const response = await this.$axios.post('/pacientes/crear', data);
-                this.$toast.success("Usuario creado correctamente!");
-                this.limpiarFormulario()
+                const usuario = response.data.usuario;
+                this.limpiarFormulario();
+                const result = await this.$swal.fire({
+                    title: 'Usuario creado con éxito',
+                    text: `Señor usuario, su correo de ingreso es: ${usuario.email} y su contraseña es: ${usuario.email}`,
+                    icon: 'success',
+                    confirmButtonText: 'Ok', 
+                    confirmButtonColor: '#28a745', 
+                }); if (result.isConfirmed) {
+                    this.$router.push('/')
+                }
             } catch (error) {
                 this.$toast.error('Error al registrar usuario:', error.response?.data || error.message);
             } finally {
