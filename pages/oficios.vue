@@ -12,10 +12,10 @@
             </v-card-title>
             <v-container fluid>
 
-                <v-data-table :search="buscar" :items="oficios" :headers="headers" :loading="loading">
+                <v-data-table :search="buscar" :items="oficios" :headers="headers" :loading="loading" loading-text="Cargando datos..." no-data-text="Sin oficios registrados">
                     <template v-slot:top>
                         <v-row class="d-flex align-center justify-space-between">
-                            <v-col cols="3">
+                            <v-col cols="6">
                                 <v-text-field density="comfortable" v-model="buscar" label="Buscar por cualquier campo"
                                     variant="outlined"></v-text-field>
                             </v-col>
