@@ -15,72 +15,77 @@
                 </div>
             </v-card-title>
 
-
             <v-col></v-col>
             <v-card-text>
-
             </v-card-text>
             <v-container fluid>
                 <v-form ref="formRegistroUsuario">
                     <v-row dense>
                         <v-col cols="12" md="4">
                             <v-text-field hint="Ingresa tu número de identificación" label="Número de documento"
-                                type="number" hide-spin-buttons variant="outlined" :rules="[rules.required]" v-model="usuarioNuevo.numero_documento">
-                            </v-text-field>
+                                type="number" hide-spin-buttons variant="outlined" :rules="[rules.required]"
+                                v-model="usuarioNuevo.numero_documento"></v-text-field>
                         </v-col>
                         <v-col cols="12" md="4">
-                            <v-text-field label="Nombres" variant="outlined" :rules="[rules.required]" v-model="usuarioNuevo.nombres">
-                            </v-text-field>
+                            <v-text-field label="Nombres" variant="outlined" :rules="[rules.required]"
+                                v-model="usuarioNuevo.nombres"></v-text-field>
                         </v-col>
                         <v-col cols="12" md="4">
-                            <v-text-field label="Apellidos" variant="outlined" :rules="[rules.required]" v-model="usuarioNuevo.apellidos">
-                            </v-text-field>
+                            <v-text-field label="Apellidos" variant="outlined" :rules="[rules.required]"
+                                v-model="usuarioNuevo.apellidos"></v-text-field>
                         </v-col>
                         <v-col cols="12" md="4">
-                            <v-text-field label="Fecha de nacimiento" type="date" variant="outlined" v-model="usuarioNuevo.fecha_nacimiento"
-                                :rules="[rules.required]">
-                            </v-text-field>
+                            <v-text-field label="Fecha de nacimiento" type="date" variant="outlined"
+                                v-model="usuarioNuevo.fecha_nacimiento" :rules="[rules.required]"></v-text-field>
                         </v-col>
                         <v-col cols="12" md="4">
-                            <v-autocomplete label="Género" variant="outlined" :items="['Masculino', 'Femenino', 'Otro']" v-model="usuarioNuevo.genero"
-                                :rules="[rules.required]">
-                            </v-autocomplete>
+                            <v-autocomplete label="Género" variant="outlined" :items="['Masculino', 'Femenino', 'Otro']"
+                                v-model="usuarioNuevo.genero" :rules="[rules.required]"></v-autocomplete>
                         </v-col>
                         <v-col cols="12" md="4">
                             <v-text-field label="Estatura" variant="outlined" type="number" hide-spin-buttons
-                                hint="Ingresa tu estatura en centímetros" :rules="[rules.required]" v-model="usuarioNuevo.estatura">
-                            </v-text-field>
+                                hint="Ingresa tu estatura en centímetros" :rules="[rules.required]"
+                                v-model="usuarioNuevo.estatura"></v-text-field>
                         </v-col>
                         <v-col cols="12" md="4">
                             <v-autocomplete label="Lateralidad" variant="outlined"
                                 :items="['Diestro', 'Zurdo', 'Ambiestro']" hint="Selecciona tu mano dominante"
-                                :rules="[rules.required]" v-model="usuarioNuevo.lateralidad_dominante">
-                            </v-autocomplete>
+                                :rules="[rules.required]" v-model="usuarioNuevo.lateralidad_dominante"></v-autocomplete>
                         </v-col>
                         <v-col cols="12" md="4">
-                            <v-autocomplete label="Oficio" variant="outlined" :items="oficios" item-value="id" item-title="nombre"
-                                hint="Selecciona profesión" :rules="[rules.required]" v-model="usuarioNuevo.oficio_id">
-                            </v-autocomplete>
+                            <v-autocomplete label="Oficio" variant="outlined" :items="oficios" item-value="id"
+                                item-title="nombre" hint="Selecciona profesión" :rules="[rules.required]"
+                                v-model="usuarioNuevo.oficio_id"></v-autocomplete>
                         </v-col>
                         <v-col cols="12" md="4">
                             <v-autocomplete label="Empresa o entidad" variant="outlined" :items="['NeuroAr']"
-                                hint="Selecciona la empresa o entidad a la que pertenece" :rules="[rules.required]" v-model="usuarioNuevo.empresa_id">
-                            </v-autocomplete>
+                                hint="Selecciona la empresa o entidad a la que pertenece" :rules="[rules.required]"
+                                v-model="usuarioNuevo.empresa_id"></v-autocomplete>
+                        </v-col>
+                        <!-- Nuevos campos para residencia -->
+                        <v-col cols="12" md="4">
+                            <v-autocomplete label="País de residencia" variant="outlined" :items="paises"
+                                item-value="codigo_dane" item-title="nombre" hint="Selecciona el país"
+                                :rules="[rules.required]" v-model="usuarioNuevo.pais_id"
+                                @change="onPaisChange"></v-autocomplete>
                         </v-col>
                         <v-col cols="12" md="4">
-                            <v-autocomplete label="Departamento de residencia" variant="outlined" :items="['Antioquia']"
-                                hint="Selecciona su departamento de residencia" :rules="[rules.required]" v-model="usuarioNuevo.departamento_id">
-                            </v-autocomplete>
+                            <v-autocomplete label="Departamento de residencia" variant="outlined" :items="departamentos"
+                                item-value="codigo_dane" item-title="nombre" hint="Selecciona su departamento"
+                                :rules="[rules.required]" v-model="usuarioNuevo.departamento_id"
+                                :disabled="!usuarioNuevo.pais_id" @change="onDepartamentoChange"></v-autocomplete>
                         </v-col>
                         <v-col cols="12" md="4">
-                            <v-autocomplete label="Municipio de residencia" variant="outlined" :items="['Caldas']"
-                                hint="Selecciona su municipio de residencia" :rules="[rules.required]" v-model="usuarioNuevo.municipio_id">
-                            </v-autocomplete>
+                            <v-autocomplete label="Municipio de residencia" variant="outlined" :items="municipios"
+                                item-value="codigo_dane" item-title="nombre" hint="Selecciona su municipio"
+                                :rules="[rules.required]" v-model="usuarioNuevo.municipio_id"
+                                :disabled="!usuarioNuevo.departamento_id"></v-autocomplete>
                         </v-col>
+                        <!-- Fin de nuevos campos -->
                         <v-col cols="12" md="4">
-                            <v-text-field label="Correo electronico" type="email" variant="outlined" v-model="usuarioNuevo.email"
-                                hint="Digite su correo electronico" :rules="[rules.required, rules.email]">
-                            </v-text-field>
+                            <v-text-field label="Correo electronico" type="email" variant="outlined"
+                                v-model="usuarioNuevo.email" hint="Digite su correo electronico"
+                                :rules="[rules.required, rules.email]"></v-text-field>
                         </v-col>
                     </v-row>
                 </v-form>
@@ -103,33 +108,30 @@ export default {
             },
             usuarioNuevo: {},
             loading: false,
-            oficios: []
+            oficios: [],
+            paises: [],
+            departamentos: [],
+            municipios: []
         };
     },
 
-    mounted() { 
-        this.listarOficios()
+    mounted() {
+        this.listarOficios();
+        this.listarPaises();
     },
 
     methods: {
-
         async registrarUsuarioNuevo() {
-            const { valid } = await this.$refs.formRegistroUsuario.validate()
-
+            const { valid } = await this.$refs.formRegistroUsuario.validate();
             if (!valid) {
                 return;
             }
             this.loading = true;
-
             try {
                 const data = {
                     ...this.usuarioNuevo,
-                    municipio_id: 1,
-                    departamento_id: 1,
-                    empresa_id: 2,
                     tipo_documento_id: 1
-
-                }
+                };
                 const response = await this.$axios.post('/pacientes/crear', data);
                 const usuario = response.data.usuario;
                 this.limpiarFormulario();
@@ -137,10 +139,11 @@ export default {
                     title: 'Usuario creado con éxito',
                     text: `Señor usuario, su correo de ingreso es: ${usuario.email} y su contraseña es: ${usuario.email}`,
                     icon: 'success',
-                    confirmButtonText: 'Ok', 
-                    confirmButtonColor: '#28a745', 
-                }); if (result.isConfirmed) {
-                    this.$router.push('/')
+                    confirmButtonText: 'Ok',
+                    confirmButtonColor: '#28a745',
+                });
+                if (result.isConfirmed) {
+                    this.$router.push('/');
                 }
             } catch (error) {
                 this.$toast.error('Error al registrar usuario:', error.response?.data || error.message);
@@ -150,21 +153,76 @@ export default {
         },
 
         limpiarFormulario() {
-            this.usuarioNuevo = {}
+            this.usuarioNuevo = {};
+            this.departamentos = [];
+            this.municipios = [];
         },
 
         async listarOficios() {
-                this.loading = true
-                try {
-                    const response = await this.$axios.get('oficios/listar');
-                    this.oficios = response.data;
-                } catch {
-                    console.error('Error al obtener los oficios');
-                } finally {
-                    this.loading = false
-                }
-            },
+            this.loading = true;
+            try {
+                const response = await this.$axios.get('oficios/listar');
+                this.oficios = response.data;
+            } catch {
+                console.error('Error al obtener los oficios');
+            } finally {
+                this.loading = false;
+            }
+        },
 
+        async listarPaises() {
+            this.loading = true;
+            try {
+                const response = await this.$axios.get('paises/listar');
+                this.paises = response.data;
+            } catch (error) {
+                console.error('Error al obtener los países', error);
+            } finally {
+                this.loading = false;
+            }
+        },
+
+        async listarDepartamentos(paisCodigo) {
+            this.loading = true;
+            try {
+                const response = await this.$axios.get(`departamentos/listar?pais=${paisCodigo}`);
+                this.departamentos = response.data;
+            } catch (error) {
+                console.error('Error al obtener los departamentos', error);
+            } finally {
+                this.loading = false;
+            }
+        },
+
+        async listarMunicipios(departamentoCodigo) {
+            this.loading = true;
+            try {
+                const response = await this.$axios.get(`municipios/listar?departamento=${departamentoCodigo}`);
+                this.municipios = response.data;
+            } catch (error) {
+                console.error('Error al obtener los municipios', error);
+            } finally {
+                this.loading = false;
+            }
+        },
+
+        onPaisChange(value) {
+            this.usuarioNuevo.departamento_id = null;
+            this.usuarioNuevo.municipio_id = null;
+            this.departamentos = [];
+            this.municipios = [];
+            if (value) {
+                this.listarDepartamentos(value);
+            }
+        },
+
+        onDepartamentoChange(value) {
+            this.usuarioNuevo.municipio_id = null;
+            this.municipios = [];
+            if (value) {
+                this.listarMunicipios(value);
+            }
+        }
     },
 };
 </script>
