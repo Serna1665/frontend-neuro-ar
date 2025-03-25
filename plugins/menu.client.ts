@@ -102,11 +102,13 @@ export default defineNuxtPlugin((nuxtApp) => {
     const filtered_menu = menu_items
         .map(item => {
             const has_permission = !item.permission || user_permissions.includes(item.permission)
-            const filtered_children = item.children ? item.children.filter(sub =>
-                !sub.permission || user_permissions.includes(sub.permission)
-            ) : []
+            const filtered_children = item.children
+                ? item.children.filter(sub => !sub.permission || user_permissions.includes(sub.permission))
+                : []
 
-            return has_permission || filtered_children.length > 0 ? { ...item, children: filtered_children } : null
+            return has_permission || filtered_children.length > 0
+                ? { ...item, children: filtered_children }
+                : null
         })
         .filter(item => item !== null)
 
