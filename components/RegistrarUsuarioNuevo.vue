@@ -4,11 +4,10 @@
             <v-card-title>
                 <div class="d-flex align-center justify-space-between w-100">
                     <div class="d-flex align-center">
-                        <img src="/public/imagenes/neuroar.png" alt="Logo" height="70px" width="70px">
+                        <img src="/public/imagenes/neuroar.png" alt="Logo" height="70px" width="70px" />
                         <v-divider inset vertical class="ml-6"></v-divider>
                         <strong class="ml-4 text-h5 font-weight-bold">Registro de usuarios</strong>
                     </div>
-
                     <v-btn icon color="primary" @click="$router.push('/'), limpiarFormulario()">
                         <v-icon>mdi-arrow-left</v-icon>
                     </v-btn>
@@ -16,11 +15,11 @@
             </v-card-title>
 
             <v-col></v-col>
-            <v-card-text>
-            </v-card-text>
+            <v-card-text></v-card-text>
             <v-container fluid>
                 <v-form ref="formRegistroUsuario">
                     <v-row dense>
+                        <!-- Campos básicos de usuario -->
                         <v-col cols="12" md="4">
                             <v-text-field hint="Ingresa tu número de identificación" label="Número de documento"
                                 type="number" hide-spin-buttons variant="outlined" :rules="[rules.required]"
@@ -62,18 +61,18 @@
                                 hint="Selecciona la empresa o entidad a la que pertenece" :rules="[rules.required]"
                                 v-model="usuarioNuevo.empresa_id"></v-autocomplete>
                         </v-col>
-                        <!-- Nuevos campos para residencia -->
+                        <!-- Campos de residencia -->
                         <v-col cols="12" md="4">
                             <v-autocomplete label="País de residencia" variant="outlined" :items="paises"
                                 item-value="codigo_dane" item-title="nombre" hint="Selecciona el país"
-                                :rules="[rules.required]" v-model="usuarioNuevo.pais_id"
-                                @change="onPaisChange"></v-autocomplete>
+                                :rules="[rules.required]" v-model="usuarioNuevo.pais_id"></v-autocomplete>
                         </v-col>
+                        <!-- Usamos una propiedad separada para el departamento -->
                         <v-col cols="12" md="4">
                             <v-autocomplete label="Departamento de residencia" variant="outlined" :items="departamentos"
                                 item-value="codigo_dane" item-title="nombre" hint="Selecciona su departamento"
-                                :rules="[rules.required]" v-model="usuarioNuevo.departamento_id"
-                                :disabled="!usuarioNuevo.pais_id" @change="onDepartamentoChange"></v-autocomplete>
+                                :rules="[rules.required]" v-model="selectedDepartamento"
+                                :disabled="!usuarioNuevo.pais_id"></v-autocomplete>
                         </v-col>
                         <v-col cols="12" md="4">
                             <v-autocomplete label="Municipio de residencia" variant="outlined" :items="municipios"
@@ -81,7 +80,6 @@
                                 :rules="[rules.required]" v-model="usuarioNuevo.municipio_id"
                                 :disabled="!usuarioNuevo.departamento_id"></v-autocomplete>
                         </v-col>
-                        <!-- Fin de nuevos campos -->
                         <v-col cols="12" md="4">
                             <v-text-field label="Correo electronico" type="email" variant="outlined"
                                 v-model="usuarioNuevo.email" hint="Digite su correo electronico"
@@ -90,7 +88,9 @@
                     </v-row>
                 </v-form>
             </v-container>
-            <v-btn color="primary" block @click="registrarUsuarioNuevo()" :loading="loading">Registrar</v-btn>
+            <v-btn color="primary" block @click="registrarUsuarioNuevo()" :loading="loading">
+                Registrar
+            </v-btn>
         </v-card>
     </div>
 </template>
@@ -106,7 +106,22 @@ export default {
                 email: value => /.+@.+\..+/.test(value) || 'Correo inválido',
                 min: value => (value && value.length >= 6) || 'Mínimo 6 caracteres'
             },
-            usuarioNuevo: {},
+            usuarioNuevo: {
+                pais_id: null,
+                departamento_id: null,
+                municipio_id: null,
+                numero_documento: '',
+                nombres: '',
+                apellidos: '',
+                fecha_nacimiento: '',
+                genero: '',
+                estatura: '',
+                lateralidad_dominante: '',
+                oficio_id: null,
+                empresa_id: '',
+                email: ''
+            },
+            selectedDepartamento: null,
             loading: false,
             oficios: [],
             paises: [],
@@ -118,6 +133,32 @@ export default {
     mounted() {
         this.listarOficios();
         this.listarPaises();
+    },
+
+    watch: {
+        'usuarioNuevo.pais_id'(nuevoPais) {
+            this.usuarioNuevo.departamento_id = null;
+            this.selectedDepartamento = null;
+            this.usuarioNuevo.municipio_id = null;
+            this.departamentos = [];
+            this.municipios = [];
+            if (nuevoPais) {
+                this.listarDepartamentos(nuevoPais);
+            }
+        },
+        selectedDepartamento(nuevoDepartamento) {
+            if (nuevoDepartamento) {
+                // Asignamos el valor correcto al campo que se envía al backend
+                this.usuarioNuevo.departamento_id = nuevoDepartamento.codigo_dane;
+                this.usuarioNuevo.municipio_id = null;
+                this.municipios = [];
+                this.listarMunicipios(nuevoDepartamento.codigo_dane);
+            } else {
+                this.usuarioNuevo.departamento_id = null;
+                this.usuarioNuevo.municipio_id = null;
+                this.municipios = [];
+            }
+        }
     },
 
     methods: {
@@ -140,7 +181,7 @@ export default {
                     text: `Señor usuario, su correo de ingreso es: ${usuario.email} y su contraseña es: ${usuario.email}`,
                     icon: 'success',
                     confirmButtonText: 'Ok',
-                    confirmButtonColor: '#28a745',
+                    confirmButtonColor: '#28a745'
                 });
                 if (result.isConfirmed) {
                     this.$router.push('/');
@@ -153,7 +194,22 @@ export default {
         },
 
         limpiarFormulario() {
-            this.usuarioNuevo = {};
+            this.usuarioNuevo = {
+                pais_id: null,
+                departamento_id: null,
+                municipio_id: null,
+                numero_documento: '',
+                nombres: '',
+                apellidos: '',
+                fecha_nacimiento: '',
+                genero: '',
+                estatura: '',
+                lateralidad_dominante: '',
+                oficio_id: null,
+                empresa_id: '',
+                email: ''
+            };
+            this.selectedDepartamento = null;
             this.departamentos = [];
             this.municipios = [];
         },
@@ -163,8 +219,8 @@ export default {
             try {
                 const response = await this.$axios.get('oficios/listar');
                 this.oficios = response.data;
-            } catch {
-                console.error('Error al obtener los oficios');
+            } catch (error) {
+                console.error('Error al obtener los oficios', error);
             } finally {
                 this.loading = false;
             }
@@ -197,32 +253,15 @@ export default {
         async listarMunicipios(departamentoCodigo) {
             this.loading = true;
             try {
-                const response = await this.$axios.get(`municipios/listar?departamento=${departamentoCodigo}`);
+                const response = await this.$axios.get(`municipios/listar/${1}`);
+                console.log('Respuesta municipios:', response.data);
                 this.municipios = response.data;
             } catch (error) {
                 console.error('Error al obtener los municipios', error);
             } finally {
                 this.loading = false;
             }
-        },
-
-        onPaisChange(value) {
-            this.usuarioNuevo.departamento_id = null;
-            this.usuarioNuevo.municipio_id = null;
-            this.departamentos = [];
-            this.municipios = [];
-            if (value) {
-                this.listarDepartamentos(value);
-            }
-        },
-
-        onDepartamentoChange(value) {
-            this.usuarioNuevo.municipio_id = null;
-            this.municipios = [];
-            if (value) {
-                this.listarMunicipios(value);
-            }
         }
-    },
+    }
 };
 </script>
