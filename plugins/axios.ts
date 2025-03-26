@@ -3,7 +3,7 @@ import { defineNuxtPlugin } from '#app'
 import { useAuthStore } from '@/stores/auth' 
 export default defineNuxtPlugin((nuxtApp) => {
     const api = axios.create({
-        baseURL: 'http://127.0.0.1:8000/api', 
+        baseURL: 'http://app.neuroar.com.co:8080/api', 
     })
 
     api.interceptors.request.use((config) => {
