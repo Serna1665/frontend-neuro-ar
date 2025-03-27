@@ -24,12 +24,12 @@ export default defineNuxtPlugin((nuxtApp) => {
         {
             title: 'Reportes',
             icon: 'mdi-chart-bar',
-            permission: '',
+            permission: 'reportes.vista',
             children: [
                 {
                     title: 'Resultados',
                     icon: 'mdi-chart-areaspline',
-                    permission: '',
+                    permission: 'resultados.vista',
                     to: '/resultados'
                 }
             ]
@@ -54,7 +54,7 @@ export default defineNuxtPlugin((nuxtApp) => {
                 {
                     title: 'Oficios',
                     icon: 'mdi-briefcase-variant',
-                    permission: '',
+                    permission: 'oficios.menu',
                     to: '/oficios'
                 },
             ]

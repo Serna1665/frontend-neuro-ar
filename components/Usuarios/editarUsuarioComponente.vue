@@ -23,9 +23,9 @@
                         </v-text-field>
                     </v-col>
                     <v-col cols="4">
-                        <v-text-field label="Género" readonly density="comfortable" variant="outlined"
+                        <v-autocomplete :items="['Masculino', 'Femenino', 'Otro']" label="Género" density="comfortable" variant="outlined"
                             v-model="datosPaciente.genero">
-                        </v-text-field>
+                        </v-autocomplete>
                     </v-col>
                     <v-col cols="4">
                         <v-autocomplete label="Oficio" variant="outlined" :items="oficios" item-title="nombre"
@@ -48,17 +48,32 @@
                         </v-text-field>
                     </v-col>
                     <v-col cols="4">
+                        <v-text-field type="number" label="Número de documento" density="comfortable" variant="outlined"
+                            v-model="datosUsuarios.numero_documento">
+                        </v-text-field>
+                    </v-col>
+                    <v-col cols="4" v-if="datosPaciente.municipio?.nombre">
+                        <v-text-field readonly label="Municipio" density="comfortable" variant="outlined"
+                            v-model="datosPaciente.municipio.nombre">
+                        </v-text-field>
+                    </v-col>
+                    <v-col cols="4">
                         <v-text-field label="Email" density="comfortable" variant="outlined"
                             v-model="datosUsuarios.email">
                         </v-text-field>
                     </v-col>
                     <v-col cols="4">
-                        <v-text-field type="number" label="Número de documento" density="comfortable" variant="outlined"
-                            v-model="datosUsuarios.numero_documento">
+                        <v-text-field label="Contraseña" density="comfortable" variant="outlined"
+                            v-model="datosUsuarios.password">
                         </v-text-field>
                     </v-col>
                 </v-row>
             </v-card-text>
+            <v-card-actions>
+                <v-spacer></v-spacer>
+                <v-btn color="red" dark size="small" variant="flat" @click="$emit('cerrarDialogo')">Cerrar</v-btn>
+                <v-btn color="success" variant="flat" size="small" @click="actualizarPaciente()"    :loading="loadingActualizar">Actualizar</v-btn>
+            </v-card-actions>
         </v-card>
     </div>
 </template>
@@ -70,7 +85,9 @@
             return {
                 datosPaciente: [],
                 oficios: [],
-                loading: false
+                loading: false,
+                loadingActualizar: false
+
             }
         },
 
@@ -98,6 +115,26 @@
                     console.error('Error al obtener los oficios');
                 }
             },
+
+            async actualizarPaciente()
+            {
+                const data = {
+                    user_id: this.datosUsuarios.id,
+                    ...this.datosUsuarios,
+                    ...this.datosPaciente
+                }
+                this.loadingActualizar = true;
+                try {
+                    const response = await this.$axios.put('/pacientes/actualizar-informacion', data);
+                    this.$toast.success('Actualizado con éxito');
+                    this.$emit('cerrarDialogo')
+                    this.$emit('pacienteActualizado')
+                } catch {
+                    this.$toast.error('Error al actualizar paciente');
+                } finally {
+                    this.loadingActualizar = false;
+                }
+            }
 
         }
     }

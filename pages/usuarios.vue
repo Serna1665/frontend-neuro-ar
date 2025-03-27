@@ -15,23 +15,22 @@
                 <v-row>
                     <v-col cols="4">
                         <v-text-field label="Correo electronico" density="comfortable" variant="outlined"
-                            v-model="buscar.email">
-                        </v-text-field>
+                            v-model="buscar.email" />
                     </v-col>
                     <v-col cols="4">
                         <v-text-field label="Número de documento" density="comfortable" variant="outlined"
-                            v-model="buscar.documento">
-                        </v-text-field>
+                            v-model="buscar.documento" />
                     </v-col>
                     <v-col cols="4">
                         <v-text-field label="Nombre del usuario" density="comfortable" variant="outlined"
-                            v-model="buscar.nombre">
-                        </v-text-field>
+                            v-model="buscar.nombre" />
+                    </v-col>
+                    <v-col cols="3" class="d-flex align-center">
+                        <v-btn color="primary" @click="buscarUsuario()" :loading="loading" class="mr-2">Filtrar usuario
+                        </v-btn>
+                        <v-btn color="red" dark @click="limpiarFiltros()">Limpiar</v-btn>
                     </v-col>
                 </v-row>
-                <v-col>
-                    <v-btn color="primary" @click="buscarUsuario()" :loading="loading">Filtrar usuario</v-btn>
-                </v-col>
             </v-container>
 
             <v-col cols="12" v-if="usuarios.length > 0">
@@ -51,22 +50,51 @@
                             </template>
                             <span>Editar usuario</span>
                         </v-tooltip>
+                        <v-tooltip location="top">
+                            <template v-slot:activator="{ props }">
+                                <v-icon v-bind="props" color="primary" icon="mdi-account-key-outline" size="small"
+                                    @click="abrirDialogoPermisos(item)">
+                                </v-icon>
+                            </template>
+                            <span>Agregar permisos al usuario</span>
+                        </v-tooltip>
+                        <v-tooltip location="top">
+                            <template v-slot:activator="{ props }">
+                                <v-icon v-bind="props" color="purple" icon="mdi-table-key" size="small"
+                                    @click="abrirDialogoRoles(item)">
+                                </v-icon>
+                            </template>
+                            <span>Agregar roles al usuario</span>
+                        </v-tooltip>
                     </template>
                 </v-data-table>
             </v-col>
         </v-card>
 
-        <v-dialog v-model="dialogEditarUsuario">
-            <editarUsuario ref="editarUsuarioRef" :datosUsuarios="datosUsuarios"></editarUsuario>
+        <v-dialog v-model="dialogEditarUsuario" persistent>
+            <editarUsuario ref="editarUsuarioRef" :datosUsuarios="datosUsuarios"
+                @cerrarDialogo="dialogEditarUsuario = false" @pacienteActualizado="buscarUsuario()"></editarUsuario>
+        </v-dialog>
+
+        <v-dialog v-model="dialogAgregarPermisos" persistent max-width="900px">
+            <agregarPermisos :datosUsuarios="datosUsuarios" @cerrarDialog="dialogAgregarPermisos = false" ref="refPermisos"></agregarPermisos>
+        </v-dialog>
+
+        <v-dialog v-model="dialogAgregarRoles" persistent max-width="900px">
+            <agregarRoles :datosUsuarios="datosUsuarios" ref="refRolesUsuario" @cerrarDialog="dialogAgregarRoles = false"></agregarRoles>
         </v-dialog>
     </div>
 </template>
 
 <script>
-import editarUsuario from "@/components/Usuarios/editarUsuarioComponente.vue";
+    import editarUsuario from "@/components/Usuarios/editarUsuarioComponente.vue";
+    import agregarPermisos from "@/components/Usuarios/agregarPermisosComponente.vue";
+    import agregarRoles from "@/components/Usuarios/agregarRolesUsuarioComponente.vue";
     export default {
         components: {
-            editarUsuario
+            editarUsuario,
+            agregarPermisos,
+            agregarRoles
         },
         middleware: 'auth',
         data() {
@@ -78,7 +106,9 @@ import editarUsuario from "@/components/Usuarios/editarUsuarioComponente.vue";
                 },
                 usuarios: [],
                 loading: false,
-                dialogEditarUsuario: false, 
+                dialogEditarUsuario: false,
+                dialogAgregarPermisos: false, 
+                dialogAgregarRoles: false, 
                 datosUsuarios: {},
                 headers: [{
                         title: 'ID',
@@ -130,6 +160,26 @@ import editarUsuario from "@/components/Usuarios/editarUsuarioComponente.vue";
                 this.dialogEditarUsuario = true
                 this.$nextTick(() => {
                     this.$refs.editarUsuarioRef.obtenerDatosUsuario()
+                })
+            },
+            limpiarFiltros(){
+                this.buscar = {},
+                this.usuarios = []
+            },
+
+            abrirDialogoPermisos(item) {
+                this.datosUsuarios = item;
+                this.dialogAgregarPermisos = true;
+                this.$nextTick(() => {
+                    this.$refs.refPermisos.listarPermisosUsuario();
+                })
+            },
+
+            abrirDialogoRoles(item) {
+                this.datosUsuarios = item;
+                this.dialogAgregarRoles = true;
+                this.$nextTick(() => {
+                    this.$refs.refRolesUsuario.listarRolesUsuario()
                 })
             }
         }
