@@ -1,6 +1,6 @@
 <script setup>
   definePageMeta({
-    layout: 'empty'
+    layout: 'empty',
   })
   import login from '@/components/Login.vue'
 </script>

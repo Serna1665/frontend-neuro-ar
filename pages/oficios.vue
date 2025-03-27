@@ -4,7 +4,7 @@
             <v-card-title>
                 <div class="d-flex align-center justify-space-between w-100">
                     <div class="d-flex align-center">
-                        <img src="/public/imagenes/neuroar.png" alt="Logo" height="70px" width="70px">
+                        <img src="/public/imagenes/icono-logo.png" alt="Logo" height="70px" width="70px">
                         <v-divider inset vertical class="ml-6"></v-divider>
                         <strong class="ml-4 text-h5 font-weight-bold">Oficios</strong>
                     </div>
@@ -50,7 +50,7 @@
                 <v-card-title>
                     <div class="d-flex align-center justify-space-between w-100">
                         <div class="d-flex align-center">
-                            <img src="/public/imagenes/neuroar.png" alt="Logo" height="50px" width="50px">
+                            <img src="/public/imagenes/icono-logo.png" alt="Logo" height="50px" width="50px">
                             <v-divider inset vertical class="ml-6"></v-divider>
                             <strong class="ml-4 text-h6 font-weight-bold">
                                 {{ modoEdicion ? 'Editar Oficio' : 'Crear Oficio'}}</strong>
