@@ -82,6 +82,10 @@
                                 v-model="usuarioNuevo.email" hint="Digite su correo electronico"
                                 :rules="[rules.required, rules.email]"></v-text-field>
                         </v-col>
+                        <!-- Campos complementarios -->
+                        <v-col cols="12" md="4">
+                            <v-switch color="primary" v-model="usuarioNuevo.usa_lentes" label="Usa lentes"></v-switch>
+                        </v-col>
                     </v-row>
                 </v-form>
             </v-container>
@@ -116,7 +120,8 @@ export default {
                 lateralidad_dominante: '',
                 oficio_id: null,
                 empresa_id: '',
-                email: ''
+                email: '',
+                usa_lentes: false,
             },
             selectedDepartamento: null,
             loading: false,
@@ -175,7 +180,7 @@ export default {
                 this.limpiarFormulario();
                 const result = await this.$swal.fire({
                     title: 'Usuario creado con éxito',
-                    text: `Señor usuario, su correo de ingreso es: ${usuario.email} y su contraseña es: ${usuario.email}`,
+                    text: `Señor usuario, su correo de ingreso es: ${usuario.email} y su contraseña es: ${usuario.numero_documento}`,
                     icon: 'success',
                     confirmButtonText: 'Ok',
                     confirmButtonColor: '#28a745'
