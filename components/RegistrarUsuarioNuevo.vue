@@ -67,16 +67,13 @@
                                 item-value="codigo_dane" item-title="nombre" hint="Selecciona el país"
                                 :rules="[rules.required]" v-model="usuarioNuevo.pais_id"></v-autocomplete>
                         </v-col>
-                        <!-- Usamos una propiedad separada para el departamento -->
-                        <v-col cols="12" md="4">
-                            <v-autocomplete label="Departamento de residencia" variant="outlined" :items="departamentos"
-                                item-value="codigo_dane" item-title="nombre" hint="Selecciona su departamento"
-                                :rules="[rules.required]" v-model="selectedDepartamento"
-                                :disabled="!usuarioNuevo.pais_id"></v-autocomplete>
-                        </v-col>
+                        <v-autocomplete label="Departamento de residencia" variant="outlined" :items="departamentos"
+                            item-value="id" item-title="nombre" hint="Selecciona su departamento"
+                            :rules="[rules.required]" v-model="selectedDepartamento" :disabled="!usuarioNuevo.pais_id">
+                        </v-autocomplete>
                         <v-col cols="12" md="4">
                             <v-autocomplete label="Municipio de residencia" variant="outlined" :items="municipios"
-                                item-value="codigo_dane" item-title="nombre" hint="Selecciona su municipio"
+                                item-value="id" item-title="nombre" hint="Selecciona su municipio"
                                 :rules="[rules.required]" v-model="usuarioNuevo.municipio_id"
                                 :disabled="!usuarioNuevo.departamento_id"></v-autocomplete>
                         </v-col>
@@ -148,11 +145,10 @@ export default {
         },
         selectedDepartamento(nuevoDepartamento) {
             if (nuevoDepartamento) {
-                // Asignamos el valor correcto al campo que se envía al backend
-                this.usuarioNuevo.departamento_id = nuevoDepartamento.codigo_dane;
+                this.usuarioNuevo.departamento_id = nuevoDepartamento;
                 this.usuarioNuevo.municipio_id = null;
                 this.municipios = [];
-                this.listarMunicipios(nuevoDepartamento.codigo_dane);
+                this.listarMunicipios(nuevoDepartamento);
             } else {
                 this.usuarioNuevo.departamento_id = null;
                 this.usuarioNuevo.municipio_id = null;
@@ -171,7 +167,8 @@ export default {
             try {
                 const data = {
                     ...this.usuarioNuevo,
-                    tipo_documento_id: 1
+                    tipo_documento_id: 1,
+                    empresa_id: 2,
                 };
                 const response = await this.$axios.post('/pacientes/crear', data);
                 const usuario = response.data.usuario;
@@ -250,10 +247,10 @@ export default {
             }
         },
 
-        async listarMunicipios(departamentoCodigo) {
+        async listarMunicipios(departamentoId) {
             this.loading = true;
             try {
-                const response = await this.$axios.get(`municipios/listar/${1}`);
+                const response = await this.$axios.get(`municipios/listar/${departamentoId}`);
                 console.log('Respuesta municipios:', response.data);
                 this.municipios = response.data;
             } catch (error) {
