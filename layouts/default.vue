@@ -1,14 +1,11 @@
 <template>
     <v-app>
-        <v-navigation-drawer v-model="drawer" app permanent>
-            <!-- Contenedor principal en columna que ocupe toda la altura -->
+        <v-navigation-drawer v-if="!hideMenu" v-model="drawer" app permanent>
             <div class="d-flex flex-column fill-height">
-                <!-- Sección superior scrollable para el menú -->
                 <div class="overflow-y-auto">
                     <v-col cols="12" class="d-flex justify-center">
                         <v-img src="/imagenes/neuroar.png" contain max-height="150" max-width="250" />
                     </v-col>
-
                     <v-list>
                         <template v-for="item in menu" :key="item.title">
                             <v-list-group v-if="item.children && item.children.length" :value="openGroups[item.title]"
@@ -23,7 +20,6 @@
                                         </v-list-item-title>
                                     </v-list-item>
                                 </template>
-
                                 <v-list-item v-for="sub in item.children" :key="sub.title" link :to="sub.to" exact
                                     :class="{ 'bg-blue-lighten-4': $route.path === sub.to }">
                                     <template v-slot:prepend>
@@ -52,7 +48,7 @@
                         </template>
                     </v-list>
                 </div>
-                <!-- Sección fija en la parte inferior para "Cerrar Sesión" -->
+
                 <div class="mt-auto">
                     <v-divider color="blue"></v-divider>
                     <v-list-item link :to="'/'" class="d-flex flex-column align-center">
@@ -67,7 +63,7 @@
             </div>
         </v-navigation-drawer>
 
-        <v-app-bar app>
+        <v-app-bar v-if="!hideMenu" app>
             <v-app-bar-nav-icon @click="drawer = !drawer" />
             <v-spacer />
             <div class="d-flex align-center">
@@ -91,50 +87,38 @@
             </v-menu>
         </v-app-bar>
 
-
         <v-main>
             <NuxtPage />
         </v-main>
     </v-app>
 </template>
 
-<script>
+
+<script setup>
 import {
-    useAuthStore
-} from "@/stores/auth";
-import {
+    computed,
     reactive
 } from "vue";
 import {
+    useRoute,
     useNuxtApp
 } from "#app";
+import {
+    useAuthStore
+} from "@/stores/auth";
 
-export default {
-    data() {
-        return {
-            drawer: true,
-            openGroups: reactive({}),
-        };
-    },
-    computed: {
-        user() {
-            const authStore = useAuthStore();
-            return authStore.user;
-        },
-        menu() {
-            return useNuxtApp().$menu;
-        },
-    },
-    methods: {
-        toggleGroup(groupTitle) {
-            this.openGroups[groupTitle] = !this.openGroups[groupTitle];
-        },
-    },
+const route = useRoute();
+const authStore = useAuthStore();
+
+const drawer = ref(true);
+const openGroups = reactive({});
+
+const hideMenu = computed(() => ["/login", "/registro"].includes(route.path));
+
+const menu = useNuxtApp().$menu;
+const user = computed(() => authStore.user);
+
+const toggleGroup = (groupTitle) => {
+    openGroups[groupTitle] = !openGroups[groupTitle];
 };
 </script>
-
-<style scoped>
-.fill-height {
-    height: 100%;
-}
-</style>
