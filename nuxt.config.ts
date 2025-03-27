@@ -4,6 +4,6 @@ export default defineNuxtConfig({
   modules: ['@nuxt/image', '@pinia/nuxt'],
   css: ['vuetify/styles'],
   build: {
-    transpile: ['vuetify'],
+    transpile: ['vuetify', 'vue-toastification'],
   },  
 })
