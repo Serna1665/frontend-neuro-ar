@@ -1,12 +1,12 @@
 import { defineStore } from 'pinia'
-import { useNuxtApp } from '#app' 
+import { useNuxtApp } from '#app'
 
 export const useAuthStore = defineStore('auth', {
   state: () => ({
     user: null as any,
     token: null as string | null,
-    roles: [] as string[],     
-    permissions: [] as string[] 
+    roles: [] as string[],
+    permissions: [] as string[]
   }),
 
   getters: {
@@ -35,26 +35,33 @@ export const useAuthStore = defineStore('auth', {
       if (process.client) {
         const storedToken = localStorage.getItem('token');
         const storedUser = localStorage.getItem('user');
-    
+
         if (storedToken && storedUser) {
           this.token = storedToken;
           this.user = JSON.parse(storedUser);
           this.roles = this.user.roles || [];
           this.permissions = this.user.permissions || [];
-    
-    
+
+
           const { $axios } = useNuxtApp();
-          const response = await $axios.get('/me'); 
-          this.user = response.data.user;
-          this.roles = response.data.user.roles;
-          this.permissions = response.data.user.permissions;
-    
-          localStorage.setItem('user', JSON.stringify(this.user));
+          try {
+            const response = await $axios.get('/me');
+            this.user = response.data.user;
+            this.roles = response.data.user.roles;
+            this.permissions = response.data.user.permissions;
+
+
+            localStorage.setItem('user', JSON.stringify(this.user));
+            localStorage.setItem('roles', JSON.stringify(this.roles));
+            localStorage.setItem('permissions', JSON.stringify(this.permissions));
+          } catch (error) {
+            console.error('Error cargando usuario:', error);
+          }
         }
       }
     }
-    
-    
+
+
 
     // logout() {
     //   this.user = null;
