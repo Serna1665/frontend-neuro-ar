@@ -115,7 +115,9 @@ const openGroups = reactive({});
 
 const hideMenu = computed(() => ["/login", "/registro"].includes(route.path));
 
-const menu = useNuxtApp().$menu;
+const { $menu } = useNuxtApp();
+
+const menu = computed(() => $menu ? $menu.value : []);
 const user = computed(() => authStore.user);
 
 const toggleGroup = (groupTitle) => {
