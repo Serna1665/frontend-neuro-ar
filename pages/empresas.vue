@@ -13,6 +13,7 @@
             <v-container fluid>
                 <v-data-table :search="buscar" :items="empresas" :headers="headers" :loading="loading"
                     loading-text="Cargando datos..." no-data-text="Sin empresas registradas">
+
                     <template v-slot:top>
                         <v-row class="d-flex align-center justify-space-between">
                             <v-col cols="6">
@@ -27,21 +28,32 @@
                         </v-row>
                     </template>
 
+                    <!-- Estado con Chip -->
+                    <template v-slot:[`item.estado_id`]="{ item }">
+                        <v-chip :color="item.estado_id === 1 ? 'green' : 'red'" variant="outlined">
+                            {{ item.estado_id === 1 ? 'Activo' : 'Inactivo' }}
+                        </v-chip>
+                    </template>
+
+                    <!-- Botones de acciones -->
                     <template v-slot:[`item.acciones`]="{ item }">
-                        <div>
-                            <v-icon color="warning" icon="mdi-pencil" size="small" @click="abrirDialogoEditar(item)">
-                            </v-icon>
-                            <v-icon color="red" icon="mdi-delete" size="small" @click="eliminarEmpresa(item.id)">
-                            </v-icon>
+                        <div class="d-flex gap-2">
+                            <v-icon color="warning" icon="mdi-pencil" size="small"
+                                @click="abrirDialogoEditar(item)"></v-icon>
+
+                            <v-tooltip text="Cambiar estado">
+                                <template #activator="{ props }">
+                                    <v-icon v-bind="props" :color="item.estado_id === 1 ? 'red' : 'green'" size="small"
+                                        :icon="item.estado_id === 1 ? 'mdi-toggle-switch-off' : 'mdi-toggle-switch'"
+                                        @click="cambiarEstadoEmpresa(item.id, item.estado_id)">
+                                    </v-icon>
+                                </template>
+                            </v-tooltip>
                         </div>
                     </template>
 
-                    <template v-slot:[`item.created_at`]="{ item }">
-                        <div>
-                            {{ item.created_at?.substring(0, 10) }}
-                        </div>
-                    </template>
                 </v-data-table>
+
             </v-container>
         </v-card>
 
@@ -63,18 +75,22 @@
                         <v-col>
                             <v-text-field :rules="CampoRequerido" variant="outlined" label="Nombre"
                                 density="comfortable" v-model="empresa.nombre"></v-text-field>
+                            <v-text-field variant="outlined" label="NIT" density="comfortable"
+                                v-model="empresa.nit"></v-text-field>
+                            <v-text-field variant="outlined" label="Dirección" density="comfortable"
+                                v-model="empresa.direccion"></v-text-field>
+                            <v-text-field variant="outlined" label="Teléfono" density="comfortable"
+                                v-model="empresa.telefono"></v-text-field>
+                            <v-text-field variant="outlined" label="Email" density="comfortable"
+                                v-model="empresa.email"></v-text-field>
                         </v-col>
                     </v-form>
                 </v-card-text>
-                <v-spacer></v-spacer>
                 <v-card-actions>
-                    <v-btn color="red" dark size="small" rounded="lg" variant="flat" @click="cerrarDialog()">
-                        Cerrar
-                    </v-btn>
+                    <v-btn color="red" dark size="small" rounded="lg" variant="flat"
+                        @click="cerrarDialog()">Cerrar</v-btn>
                     <v-btn :color="modoEdicion ? 'warning' : 'success'" size="small" rounded="lg" variant="flat"
-                        @click="modoEdicion ? actualizarEmpresa(empresa) : crearEmpresa()" :loading="loadingCrear">
-                        Guardar
-                    </v-btn>
+                        @click="guardarEmpresa()" :loading="loadingCrear">Guardar</v-btn>
                 </v-card-actions>
             </v-card>
         </v-dialog>
@@ -86,76 +102,44 @@ export default {
     data() {
         return {
             crearEmpresaDialog: false,
-            empresa: {
-                nombre: '',
-            },
+            empresa: { nombre: '', nit: '', direccion: '', telefono: '', email: '', estado_id: 1 },
             CampoRequerido: [v => !!v || 'Nombre es requerido'],
             loadingCrear: false,
             loading: false,
             buscar: '',
             empresas: [],
             headers: [
-                {
-                    title: 'id',
-                    key: 'id',
-                },
-                {
-                    title: 'Nombre',
-                    key: 'nombre',
-                },
-                {
-                    title: 'Fecha de creación',
-                    key: 'created_at',
-                },
-                {
-                    title: 'Acciones',
-                    key: 'acciones',
-                    align: 'center'
-                }
+                { title: 'ID', key: 'id' },
+                { title: 'Nombre', key: 'nombre' },
+                { title: 'NIT', key: 'nit' },
+                { title: 'Dirección', key: 'direccion' },
+                { title: 'Teléfono', key: 'telefono' },
+                { title: 'Email', key: 'email' },
+                { title: 'Estado', key: 'estado_id', align: 'center' },
+                { title: 'Acciones', key: 'acciones', align: 'center' }
             ],
             modoEdicion: false,
         };
     },
 
     mounted() {
-        // this.listarEmpresas();
+        this.listarEmpresas();
     },
 
     methods: {
         abrirDialogo() {
             this.modoEdicion = false;
+            this.empresa = { nombre: '', nit: '', direccion: '', telefono: '', email: '', estado_id: 1 };
             this.crearEmpresaDialog = true;
-        },
-
-        async crearEmpresa() {
-            const { valid } = await this.$refs.formEmpresa.validate();
-            if (!valid) return;
-            this.loadingCrear = true;
-            try {
-                await this.$axios.post('empresas/crear-empresa', this.empresa);
-                this.$toast.success('Empresa creada con éxito');
-                this.cerrarDialog();
-                this.listarEmpresas();
-            } catch (error) {
-                console.error('Error al crear la empresa:', error);
-                this.$toast.error('Hubo un error al crear la empresa. Inténtelo nuevamente.');
-            } finally {
-                this.loadingCrear = false;
-            }
-        },
-
-        cerrarDialog() {
-            this.empresa = {};
-            this.crearEmpresaDialog = false;
         },
 
         async listarEmpresas() {
             this.loading = true;
             try {
-                const response = await this.$axios.get('empresas/listar');
+                const response = await this.$axios.get('/empresas/listarTodas');
                 this.empresas = response.data;
-            } catch {
-                console.error('Error al obtener las empresas');
+            } catch (error) {
+                console.error('Error al obtener las empresas:', error);
             } finally {
                 this.loading = false;
             }
@@ -167,41 +151,39 @@ export default {
             this.crearEmpresaDialog = true;
         },
 
-        async actualizarEmpresa(item) {
+        async guardarEmpresa() {
             this.loadingCrear = true;
             try {
-                await this.$axios.put('empresas/actualizar-empresa/' + item.id, item);
-                this.$toast.success('Empresa actualizada con éxito');
+                if (this.modoEdicion) {
+                    await this.$axios.put(`/empresas/actualizar-empresa/${this.empresa.id}`, this.empresa);
+                } else {
+                    await this.$axios.post('/empresas/crear-empresa', this.empresa);
+                }
+                this.$toast.success('Operación exitosa');
                 this.cerrarDialog();
                 this.listarEmpresas();
-            } catch {
-                console.error('Error al actualizar la empresa');
+            } catch (error) {
+                console.error('Error al guardar la empresa:', error);
             } finally {
                 this.loadingCrear = false;
             }
         },
 
-        async eliminarEmpresa(itemId) {
-            const result = await this.$swal.fire({
-                title: '¿Estás seguro?',
-                text: 'No podrás deshacer esta acción.',
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonText: 'Sí, eliminar',
-                cancelButtonText: 'Cancelar',
-            });
-            if (result.isConfirmed) {
-                this.$axios
-                    .delete('empresas/eliminar-empresa/' + itemId)
-                    .then(() => {
-                        this.$toast.success('Empresa eliminada con éxito');
-                        this.listarEmpresas();
-                    })
-                    .catch(error => {
-                        console.error('Error al eliminar la empresa', error);
-                    });
+        async cambiarEstadoEmpresa(id, estadoActual) {
+            const nuevoEstado = estadoActual === 1 ? 'inactivada' : 'activada';
+            try {
+                await this.$axios.put(`/empresas/cambiar-estado/${id}`);
+                this.$toast.success(`Empresa ${nuevoEstado} correctamente`);
+                this.listarEmpresas();
+            } catch (error) {
+                console.error('Error al cambiar estado de la empresa:', error);
+                this.$toast.error('Error al cambiar el estado');
             }
         },
-    },
+
+        cerrarDialog() {
+            this.crearEmpresaDialog = false;
+        }
+    }
 };
 </script>
