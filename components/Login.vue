@@ -2,6 +2,8 @@
     <v-app>
         <v-container fluid class="full-height pa-0">
             <v-row class="full-height ma-0" align="stretch" justify="center" dense>
+
+                <!-- Panel izquierdo solo visible en escritorio -->
                 <v-col cols="4" class="left-col pa-0 position-relative d-none d-md-flex">
                     <div class="semi-circulo"></div>
                     <div class="crear-cuenta">
@@ -15,6 +17,7 @@
                         class="hombre-img"></v-img>
                 </v-col>
 
+                <!-- Formulario -->
                 <v-col cols="12" md="4" class="pa-0 d-flex align-center justify-center centrado-formulario">
                     <v-form ref="formIncioSesion" class="formulario-login">
                         <v-row class="d-flex flex-column align-center" dense>
@@ -23,7 +26,7 @@
                                     max-width="200" class="mx-auto"></v-img>
                             </v-col>
 
-                            <!-- Campo: Correo Electrónico -->
+                            <!-- Campo: Correo -->
                             <v-col cols="12">
                                 <v-text-field label="Correo Electrónico" variant="outlined"
                                     prepend-inner-icon="mdi-account-outline" v-model="inicioSesion.email" rounded
@@ -31,17 +34,17 @@
                                 </v-text-field>
                             </v-col>
 
-                            <!-- Campo: Contraseña -->
+                            <!-- Campo: Contraseña con icono dentro -->
                             <v-col cols="12">
                                 <v-text-field label="Contraseña" :type="mostrarClave ? 'text' : 'password'"
                                     variant="outlined" rounded prepend-inner-icon="mdi-lock-outline"
-                                    :append-icon="mostrarClave ? 'mdi-eye-off' : 'mdi-eye'"
-                                    v-model="inicioSesion.password" @click:append="mostrarClave = !mostrarClave"
+                                    :append-inner-icon="mostrarClave ? 'mdi-eye-off' : 'mdi-eye'"
+                                    @click:append-inner="mostrarClave = !mostrarClave" v-model="inicioSesion.password"
                                     :rules="[rules.required, rules.min]">
                                 </v-text-field>
                             </v-col>
 
-                            <!-- Campo: Número de Documento -->
+                            <!-- Campo: Documento -->
                             <v-col cols="12" v-if="mostrarNumeroDocumento">
                                 <v-text-field label="Número de Documento" variant="outlined"
                                     prepend-inner-icon="mdi-card-account-details"
@@ -50,7 +53,7 @@
                                 </v-text-field>
                             </v-col>
 
-                            <!-- Enlace: Olvidé mi contraseña -->
+                            <!-- Olvidé contraseña -->
                             <v-col cols="12" class="text-center">
                                 <NuxtLink to="" class="text-caption">
                                     ¿Has olvidado tu contraseña?
@@ -63,14 +66,32 @@
                                     Ingresar
                                 </v-btn>
                             </v-col>
+
+                            <!-- Crear cuenta (visible solo en móviles) -->
+                            <v-col cols="12" class="d-md-none text-center mt-2">
+                                <NuxtLink to="/registro">
+                                    <v-btn variant="tonal" color="blue">Crear cuenta</v-btn>
+                                </NuxtLink>
+                            </v-col>
                         </v-row>
                     </v-form>
                 </v-col>
 
+                <!-- Imagen derecha solo escritorio -->
                 <v-col cols="4" class="right-col pa-0 d-none d-md-flex align-center justify-center">
                     <v-img class="nino-img" src="/imagenes/nino_login.png" alt="Niño con VR" :height="'100%'"></v-img>
                 </v-col>
             </v-row>
+
+            <!-- Botón flotante visible en todas las resoluciones -->
+            <div class="web-floating-link">
+                <a href="https://neuroar.com.co/" target="_blank" class="link-sitio">
+                    <v-btn color="blue-darken-2" class="text-white" prepend-icon="mdi-earth">
+                        Visita nuestro sitio oficial
+                    </v-btn>
+                </a>
+            </div>
+
         </v-container>
     </v-app>
 </template>
@@ -227,5 +248,18 @@ export default {
 
 .boton-crear-cuenta .v-btn:hover {
     background: rgba(0, 102, 204, 0.8);
+}
+
+.web-floating-link {
+    position: fixed;
+    bottom: 15px;
+    left: 0;
+    right: 0;
+    padding: 0 16px;
+    z-index: 99;
+}
+
+.link-sitio {
+    text-decoration: none !important;
 }
 </style>
