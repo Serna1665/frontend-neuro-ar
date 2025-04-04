@@ -86,8 +86,8 @@
                                     density="comfortable" v-model="sedes.correo"></v-text-field>
                             </v-col>
                             <v-col cols="12" md="4" sm="4">
-                                <v-autocomplete :rules="[rules.required]" variant="outlined" label="Empresas"
-                                    density="comfortable" v-model="sedes.empresa_id"></v-autocomplete>
+                                <v-autocomplete :rules="[rules.required]" variant="outlined" label="Empresas" :loading="loadingEmpresas"
+                                    density="comfortable" v-model="sedes.empresa_id" :items="empresas" item-title="nombre" item-value="id"></v-autocomplete>
                             </v-col>
                         </v-row>
                     </v-form>
@@ -114,13 +114,15 @@
                 sedesDialog: false,
                 loadingCrear: false,
                 loadingListar: false,
+                loadingEmpresas: false, 
                 sedesCargadas: [],
+                empresas: [], 
                 sedes: {
                     nombre: '',
                     direccion: '',
                     telefono: '',
                     correo: '',
-                    empresa_id: 2,
+                    empresa_id: '',
                     estado_id: 1,
                 },
                 headers: [{
@@ -170,7 +172,8 @@
         },
 
         mounted() {
-            this.listarSedes()
+            this.listarSedes();
+            this.listarEmpresas();
         },
 
         methods: {
@@ -237,6 +240,18 @@
                     console.error(error)
                 }).finally(() => {
                     this.loadingCrear = false;
+                })
+            },
+
+            listarEmpresas() {
+                this.loadingEmpresas = true;
+                this.$axios.get('/empresas/listarActivas').then((res) => {
+                    this.empresas = res.data
+                }).catch((error) => {
+                    this.$toast.error('Error al listar las empresas')
+                    console.error(error)
+                }).finally(() => {
+                    this.loadingEmpresas = false;
                 })
             }
         },

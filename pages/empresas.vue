@@ -30,7 +30,7 @@
 
                     <!-- Estado con Chip -->
                     <template v-slot:[`item.estado_id`]="{ item }">
-                        <v-chip :color="item.estado_id === 1 ? 'green' : 'red'" variant="outlined">
+                        <v-chip :color="item.estado_id === 1 ? 'green' : 'red'" label variant="flat" size="small">
                             {{ item.estado_id === 1 ? 'Activo' : 'Inactivo' }}
                         </v-chip>
                     </template>
