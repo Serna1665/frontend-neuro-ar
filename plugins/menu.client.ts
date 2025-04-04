@@ -13,12 +13,6 @@ export default defineNuxtPlugin((nuxtApp) => {
                     permission: '',
                     to: '/inicio'
                 },
-                {
-                    title: 'Gestor de contenido',
-                    icon: 'mdi-file-document-edit',
-                    permission: '',
-                    to: ''
-                },
             ]
         },
         {
@@ -39,12 +33,6 @@ export default defineNuxtPlugin((nuxtApp) => {
             icon: 'mdi-cog',
             permission: '',
             children: [
-                {
-                    title: 'Pacientes',
-                    icon: 'mdi-account-multiple',
-                    permission: '',
-                    to: '/pacientes'
-                },
                 {
                     title: 'Empresas',
                     icon: 'mdi-office-building',
