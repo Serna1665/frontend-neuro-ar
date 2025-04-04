@@ -30,7 +30,6 @@ export default defineNuxtPlugin((nuxtApp) => {
                 icon: 'mdi-cog',
                 permission: '',
                 children: [
-                    { title: 'Pacientes', icon: 'mdi-account-multiple', permission: '', to: '/pacientes' },
                     { title: 'Sedes', icon: 'mdi-home-group', permission: 'sedes.vista', to: '/sedes' },
                     { title: 'Empresas', icon: 'mdi-office-building', permission: '', to: '/empresas' },
                     { title: 'Oficios', icon: 'mdi-briefcase-variant', permission: 'oficios.menu', to: '/oficios' },
