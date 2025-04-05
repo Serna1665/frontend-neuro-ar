@@ -71,7 +71,7 @@
                         <v-row dense>
                             <v-col cols="12" md="4" sm="4">
                                 <v-text-field :rules="[rules.required]" variant="outlined" label="Nombre"
-                                    density="comfortable" v-model="sedes.nombre"></v-text-field>
+                                    density="comfortable" v-model="sedes.nombre" hint="Ingrese el nombre de la Sede"></v-text-field>
                             </v-col>
                             <v-col cols="12" md="4" sm="4">
                                 <v-text-field :rules="[rules.required]" variant="outlined" label="Dirección"
