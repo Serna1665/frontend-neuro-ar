@@ -13,15 +13,16 @@ export default defineNuxtPlugin((nuxtApp) => {
                 icon: 'mdi-home',
                 permission: '',
                 children: [
-                    { title: 'Inicio', icon: 'mdi-home-circle', permission: '', to: '/inicio' },
+                    { title: 'Dashboard', icon: 'mdi-view-dashboard', permission: '', to: '/inicio' },
                 ]
             },
             {
-                title: 'Reportes',
+                title: 'Resultados',
                 icon: 'mdi-chart-bar',
                 permission: 'reportes.vista',
                 children: [
-                    { title: 'Resultados', icon: 'mdi-chart-areaspline', permission: 'resultados.vista', to: '/resultados' }
+                    { title: 'Individuales', icon: 'mdi-human-greeting', permission: 'resultados.vista', to: '/resultados' },
+                    { title: 'Empresa', icon: 'mdi-domain', permission: 'resultados.vista', to: '/resultadosEmpresa' }
                 ]
             },
             {
