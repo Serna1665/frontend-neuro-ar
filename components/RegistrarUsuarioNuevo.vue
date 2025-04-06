@@ -52,9 +52,10 @@
                                 :rules="[rules.required]" v-model="usuarioNuevo.lateralidad_dominante"></v-autocomplete>
                         </v-col>
                         <v-col cols="12" md="4">
-                            <v-autocomplete label="Oficio" variant="outlined" :items="oficios" item-value="id"
-                                item-title="nombre" hint="Selecciona profesión" :rules="[rules.required]"
-                                v-model="usuarioNuevo.oficio_id"></v-autocomplete>
+                            <v-autocomplete v-model="usuarioNuevo.oficio_id" :items="oficios" item-value="id"
+                                item-title="nombre" label="Oficio" hint="Escribe al menos 4 letras" variant="outlined"
+                                :rules="[rules.required]" :loading="loadingOficios" v-model:search="busquedaOficio"
+                                @update:search="buscarOficios" hide-no-data hide-details="auto"></v-autocomplete>
                         </v-col>
                         <v-col cols="12" md="4">
                             <v-autocomplete label="Empresa o entidad" variant="outlined" :items="empresas" item-title="nombre"
@@ -143,12 +144,14 @@ export default {
             municipios: [],
             empresas: [],
             sedes: [],
-            dependencias: []
+            dependencias: [],
+            busquedaOficio: '',
+            loadingOficios: false,
+            timeoutOficio: null,
         };
     },
 
     mounted() {
-        this.listarOficios();
         this.listarPaises();
         this.listarEmpresas();
     },
@@ -231,22 +234,34 @@ export default {
             this.municipios = [];
         },
 
-        async listarOficios() {
-            this.loading = true;
-            try {
-                const response = await this.$axios.get('oficios/listar');
-                this.oficios = response.data;
-            } catch (error) {
-                console.error('Error al obtener los oficios', error);
-            } finally {
-                this.loading = false;
+        buscarOficios(valor) {
+            clearTimeout(this.timeoutOficio);
+
+            if (!valor || valor.length < 4) {
+                this.oficios = [];
+                return;
             }
+
+            this.timeoutOficio = setTimeout(async () => {
+                this.loadingOficios = true;
+                try {
+                    const response = await this.$axios.get('/oficios/buscar', {
+                        params: { q: valor }
+                    });
+                    this.oficios = response.data;
+                } catch (error) {
+                    console.error('Error al buscar oficios:', error);
+                } finally {
+                    this.loadingOficios = false;
+                }
+            }, 400);
         },
+
 
         async listarPaises() {
             this.loading = true;
             try {
-                const response = await this.$axios.get('paises/listar');
+                const response = await this.$axios.get('/paises/listar');
                 this.paises = response.data;
             } catch (error) {
                 console.error('Error al obtener los países', error);

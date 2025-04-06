@@ -14,7 +14,6 @@ export default defineNuxtPlugin((nuxtApp) => {
                 permission: '',
                 children: [
                     { title: 'Inicio', icon: 'mdi-home-circle', permission: '', to: '/inicio' },
-                    { title: 'Gestor de contenido', icon: 'mdi-file-document-edit', permission: '', to: '' },
                 ]
             },
             {
