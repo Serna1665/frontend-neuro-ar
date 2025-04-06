@@ -34,19 +34,38 @@
                     </template>
 
                     <template v-slot:[`item.estado_id`]="{ item }">
-                      <v-chip :color="item.estado_id == 1 ? 'green' : 'red'" label variant="flat" size="small"
-                          >{{ item.estado_id == 1 ? 'Activo' : 'Inactivo' }}</v-chip>
+                        <v-chip :color="item.estado_id == 1 ? 'green' : 'red'" label variant="flat" size="small">
+                            {{ item.estado_id == 1 ? 'Activo' : 'Inactivo' }}</v-chip>
                     </template>
 
                     <template v-slot:[`item.acciones`]="{ item }">
                         <v-tooltip location="top">
-                            <template v-slot:activator="{ props }">
+                            <template v-slot:activator="{ props }" v-if="item.estado_id == 1">
                                 <v-icon v-bind="props" color="warning" icon="mdi-pencil" size="small"
                                     @click="abrirDialogoEditar(item)">
                                 </v-icon>
                             </template>
                             <span>Editar Sede</span>
                         </v-tooltip>
+                        <v-tooltip location="top">
+                            <template v-slot:activator="{ props }">
+                                <v-icon v-bind="props" :color="item.estado_id === 1 ? 'green' : 'red'"
+                                    icon="mdi-toggle-switch" size="small" @click="cambiarEstado(item.id)"
+                                    style="cursor: pointer">
+                                </v-icon>
+                            </template>
+                            <span>{{ item.estado_id === 1 ? 'Inactivar' : 'Activar' }}</span>
+                        </v-tooltip>
+
+                        <v-tooltip location="top">
+                            <template v-slot:activator="{ props }" v-if="item.estado_id == 1">
+                                <v-icon v-bind="props" color="primary" icon="mdi-file-document-multiple-outline" size="small"
+                                    @click="abrirDialogoAsignarDependencias(item)">
+                                </v-icon>
+                            </template>
+                            <span>Asignar dependencias</span>
+                        </v-tooltip>
+
                     </template>
                 </v-data-table>
             </v-container>
@@ -86,8 +105,9 @@
                                     density="comfortable" v-model="sedes.correo"></v-text-field>
                             </v-col>
                             <v-col cols="12" md="4" sm="4">
-                                <v-autocomplete :rules="[rules.required]" variant="outlined" label="Empresas" :loading="loadingEmpresas"
-                                    density="comfortable" v-model="sedes.empresa_id" :items="empresas" item-title="nombre" item-value="id"></v-autocomplete>
+                                <v-autocomplete :rules="[rules.required]" variant="outlined" label="Empresas"
+                                    :loading="loadingEmpresas" density="comfortable" v-model="sedes.empresa_id"
+                                    :items="empresas" item-title="nombre" item-value="id"></v-autocomplete>
                             </v-col>
                         </v-row>
                     </v-form>
@@ -103,20 +123,32 @@
             </v-card>
         </v-dialog>
 
+        <v-dialog v-model="asignarDependenciaDialog" max-width="900px" persistent>
+            <v-card>
+                <asignarDepedencia :sedes="sedeSeleccionada" @cerrarDialogo="asignarDependenciaDialog = false"></asignarDepedencia>
+            </v-card>
+        </v-dialog>
+
     </div>
 </template>
 
 <script>
+    import asignarDepedencia from "@/components/Sedes/asignarDependenciasSede.vue"
     export default {
+        components: {
+            asignarDepedencia
+        },
         data() {
             return {
                 buscar: '',
                 sedesDialog: false,
                 loadingCrear: false,
                 loadingListar: false,
-                loadingEmpresas: false, 
+                loadingEmpresas: false,
                 sedesCargadas: [],
-                empresas: [], 
+                empresas: [],
+                asignarDependenciaDialog: false,
+                sedeSeleccionada: {},
                 sedes: {
                     nombre: '',
                     direccion: '',
@@ -253,6 +285,35 @@
                 }).finally(() => {
                     this.loadingEmpresas = false;
                 })
+            },
+
+            async cambiarEstado(item) {
+                const result = await this.$swal.fire({
+                    title: '¿Estás seguro?',
+                    text: 'Cambiaras el estado de esta sede.',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: "#22bb33",
+                    confirmButtonText: 'Sí, cambiar estado',
+                    cancelButtonColor: "#d33",
+                    cancelButtonText: 'Cancelar',
+
+                });
+                if (result.isConfirmed) {
+                    this.$axios.post('/sedes/cambiar-estado/' + item)
+                        .then(() => {
+                            this.$toast.success('Estado cambiado con éxito');
+                            this.listarSedes();
+                        })
+                        .catch((error) => {
+                            console.error('Error al cambiar el estado', error);
+                        });
+                }
+            },
+
+            abrirDialogoAsignarDependencias(item) {
+                this.sedeSeleccionada = item
+                this.asignarDependenciaDialog = true;
             }
         },
     }

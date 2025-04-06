@@ -57,9 +57,19 @@
                                 v-model="usuarioNuevo.oficio_id"></v-autocomplete>
                         </v-col>
                         <v-col cols="12" md="4">
-                            <v-autocomplete label="Empresa o entidad" variant="outlined" :items="['NeuroAr']"
-                                hint="Selecciona la empresa o entidad a la que pertenece" :rules="[rules.required]"
-                                v-model="usuarioNuevo.empresa_id"></v-autocomplete>
+                            <v-autocomplete label="Empresa o entidad" variant="outlined" :items="empresas" item-title="nombre"
+                                item-value="id" hint="Selecciona la empresa o entidad a la que pertenece" :rules="[rules.required]"
+                                v-model="usuarioNuevo.empresa_id" @update:model-value="listarSedes"></v-autocomplete>
+                        </v-col>
+                        <v-col cols="12" md="4">
+                            <v-autocomplete label="Sede a la que pertenece" variant="outlined" :items="sedes" item-title="nombre"
+                                item-value="id" hint="Seleccione la sede a la que pertenece" :rules="[rules.required]"
+                                v-model="usuarioNuevo.sede_id" :disabled="!usuarioNuevo.empresa_id" no-data-text="La empresa no tiene sedes registradas" @update:model-value="obtenerDependenciasSede"></v-autocomplete>
+                        </v-col>
+                        <v-col cols="12" md="4">
+                            <v-autocomplete label="Dependencia a la que pertenece" variant="outlined" :items="dependencias" item-title="nombre"
+                                item-value="id" hint="Seleccione la sede a la que pertenece" :rules="[rules.required]"
+                                v-model="usuarioNuevo.dependencia_id" :disabled="!usuarioNuevo.sede_id" no-data-text="La empresa no tiene sedes registradas"></v-autocomplete>
                         </v-col>
                         <!-- Campos de residencia -->
                         <v-col cols="12" md="4">
@@ -122,19 +132,25 @@ export default {
                 empresa_id: '',
                 email: '',
                 usa_lentes: false,
+                sede_id: '',
+                dependencia_id: ''
             },
             selectedDepartamento: null,
             loading: false,
             oficios: [],
             paises: [],
             departamentos: [],
-            municipios: []
+            municipios: [],
+            empresas: [],
+            sedes: [],
+            dependencias: []
         };
     },
 
     mounted() {
         this.listarOficios();
         this.listarPaises();
+        this.listarEmpresas();
     },
 
     watch: {
@@ -173,7 +189,6 @@ export default {
                 const data = {
                     ...this.usuarioNuevo,
                     tipo_documento_id: 1,
-                    empresa_id: 2,
                 };
                 const response = await this.$axios.post('/pacientes/crear', data);
                 const usuario = response.data.usuario;
@@ -263,7 +278,43 @@ export default {
             } finally {
                 this.loading = false;
             }
-        }
+        },
+
+        async listarEmpresas() {
+            this.loading = true;
+            try {
+                const response = await this.$axios.get('empresas/listarActivas');
+                this.empresas = response.data;
+            } catch (error) {
+                console.error('Error al obtener las empresas', error);
+            } finally {
+                this.loading = false;
+            }
+        },
+
+        async listarSedes(empresa_id)
+        {
+            this.loading = true;
+            try {
+                const response = await this.$axios.get(`/sedes/listar-sede-empresa/${empresa_id}`);
+                this.sedes = response.data;
+            } catch (error) {
+                console.error('Error al obtener las sedes', error);
+            } finally {
+                this.loading = false;
+            }
+        },
+
+        obtenerDependenciasSede(sede) {
+                this.loading = true;
+                this.$axios.get('/sedes/listar-dependencias-sede/' + sede).then((res) => {
+                    this.dependencias = res.data.dependencias;
+                }).catch((error) => {
+                    console.error(error);
+                }).finally(() => {
+                    this.loading = false;
+                });
+            }
     }
 };
 </script>
