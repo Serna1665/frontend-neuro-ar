@@ -22,7 +22,7 @@
                         <!-- Campos básicos de usuario -->
                         <v-col cols="12" md="4">
                             <v-text-field hint="Ingresa tu número de identificación" label="Número de documento"
-                                type="number" hide-spin-buttons variant="outlined" :rules="[rules.required]"
+                                type="number" hide-spin-buttons variant="outlined" :rules="[rules.required, rules.min]"
                                 v-model="usuarioNuevo.numero_documento"></v-text-field>
                         </v-col>
                         <v-col cols="12" md="4">
