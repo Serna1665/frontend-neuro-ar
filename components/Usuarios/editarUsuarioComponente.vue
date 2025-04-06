@@ -69,6 +69,12 @@
                         </v-autocomplete>
                     </v-col>
                     <v-col cols="4">
+                        <v-autocomplete label="Dependencias" variant="outlined" :items="dependencias" item-title="nombre"
+                            item-value="id" v-model="datosPaciente.dependencia_id" density="comfortable"
+                            :disabled="!datosPaciente.sede_id" no-data-text="Sin sedes registradas">
+                        </v-autocomplete>
+                    </v-col>
+                    <v-col cols="4">
                         <v-text-field label="Email" density="comfortable" variant="outlined"
                             v-model="datosUsuarios.email">
                         </v-text-field>
@@ -100,7 +106,8 @@
                 loading: false,
                 loadingActualizar: false,
                 empresas: [],
-                sedes: []
+                sedes: [],
+                dependencias: []
 
             }
         },
@@ -109,6 +116,12 @@
             'datosPaciente.empresa_id'(nuevoValor) {
                 if (nuevoValor) {
                     this.listarSedes();
+                }
+            },
+
+            'datosPaciente.sede_id'(nuevoValor) {
+                if (nuevoValor) {
+                    this.obtenerDependenciasSede();
                 }
             },
         },
@@ -178,6 +191,17 @@
                     this.loading = false;
                 }
             },
+
+            obtenerDependenciasSede() {
+                this.loading = true;
+                this.$axios.get(`/sedes/listar-dependencias-sede/${this.datosPaciente.sede_id}`).then((res) => {
+                    this.dependencias = res.data.dependencias;
+                }).catch((error) => {
+                    console.error(error);
+                }).finally(() => {
+                    this.loading = false;
+                });
+            }
 
         }
 
