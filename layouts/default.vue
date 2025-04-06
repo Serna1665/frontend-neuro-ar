@@ -52,9 +52,9 @@
                 <div class="mt-auto">
                     <v-divider color="blue"></v-divider>
                     <v-list-item link :to="'/'" class="d-flex flex-column align-center">
-                        <v-list-item-icon class="d-flex justify-center">
+                        <v-icon class="d-flex justify-center">
                             <v-icon color="red" size="24">mdi-power</v-icon>
-                        </v-list-item-icon>
+                        </v-icon>
                         <v-list-item-title class="text-body-2 font-weight-bold text-center">
                             Cerrar Sesión
                         </v-list-item-title>
@@ -71,8 +71,8 @@
             </div>
             <v-spacer />
             <v-menu offset-y>
-                <template #activator="{ props, on }">
-                    <v-btn v-bind="props" v-on="on" icon>
+                <template #activator="{ props }">
+                    <v-btn v-bind="props" icon>
                         <v-icon size="28">mdi-account</v-icon>
                     </v-btn>
                 </template>
@@ -85,6 +85,7 @@
                     </v-list-item>
                 </v-list>
             </v-menu>
+
         </v-app-bar>
 
         <v-main>
@@ -95,32 +96,34 @@
 
 
 <script setup>
-import {
-    computed,
-    reactive
-} from "vue";
-import {
-    useRoute,
-    useNuxtApp
-} from "#app";
-import {
-    useAuthStore
-} from "@/stores/auth";
+    import {
+        computed,
+        reactive
+    } from "vue";
+    import {
+        useRoute,
+        useNuxtApp
+    } from "#app";
+    import {
+        useAuthStore
+    } from "@/stores/auth";
 
-const route = useRoute();
-const authStore = useAuthStore();
+    const route = useRoute();
+    const authStore = useAuthStore();
 
-const drawer = ref(true);
-const openGroups = reactive({});
+    const drawer = ref(true);
+    const openGroups = reactive({});
 
-const hideMenu = computed(() => ["/login", "/registro"].includes(route.path));
+    const hideMenu = computed(() => ["/login", "/registro"].includes(route.path));
 
-const { $menu } = useNuxtApp();
+    const {
+        $menu
+    } = useNuxtApp();
 
-const menu = computed(() => $menu ? $menu.value : []);
-const user = computed(() => authStore.user);
+    const menu = computed(() => $menu ? $menu.value : []);
+    const user = computed(() => authStore.user);
 
-const toggleGroup = (groupTitle) => {
-    openGroups[groupTitle] = !openGroups[groupTitle];
-};
+    const toggleGroup = (groupTitle) => {
+        openGroups[groupTitle] = !openGroups[groupTitle];
+    };
 </script>

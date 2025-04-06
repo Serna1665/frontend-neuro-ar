@@ -23,8 +23,8 @@
                         </v-text-field>
                     </v-col>
                     <v-col cols="4">
-                        <v-autocomplete :items="['Masculino', 'Femenino', 'Otro']" label="Género" density="comfortable" variant="outlined"
-                            v-model="datosPaciente.genero">
+                        <v-autocomplete :items="['Masculino', 'Femenino', 'Otro']" label="Género" density="comfortable"
+                            variant="outlined" v-model="datosPaciente.genero">
                         </v-autocomplete>
                     </v-col>
                     <v-col cols="4">
@@ -38,8 +38,8 @@
                         </v-text-field>
                     </v-col>
                     <v-col cols="4">
-                        <v-autocomplete  :items="['Diestro', 'Zurdo', 'Ambiestro']" label="Lateralidad dominante" density="comfortable" variant="outlined"
-                            v-model="datosPaciente.lateralidad_dominante">
+                        <v-autocomplete :items="['Diestro', 'Zurdo', 'Ambiestro']" label="Lateralidad dominante"
+                            density="comfortable" variant="outlined" v-model="datosPaciente.lateralidad_dominante">
                         </v-autocomplete>
                     </v-col>
                     <v-col cols="4">
@@ -58,6 +58,17 @@
                         </v-text-field>
                     </v-col>
                     <v-col cols="4">
+                        <v-autocomplete label="Empresa" variant="outlined" :items="empresas" item-title="nombre"
+                            item-value="id" v-model="datosPaciente.empresa_id" density="comfortable">
+                        </v-autocomplete>
+                    </v-col>
+                    <v-col cols="4">
+                        <v-autocomplete label="Sede" variant="outlined" :items="sedes" item-title="nombre"
+                            item-value="id" v-model="datosPaciente.sede_id" density="comfortable"
+                            :disabled="!datosPaciente.empresa_id" no-data-text="Sin sedes registradas">
+                        </v-autocomplete>
+                    </v-col>
+                    <v-col cols="4">
                         <v-text-field label="Email" density="comfortable" variant="outlined"
                             v-model="datosUsuarios.email">
                         </v-text-field>
@@ -72,7 +83,8 @@
             <v-card-actions>
                 <v-spacer></v-spacer>
                 <v-btn color="red" dark size="small" variant="flat" @click="$emit('cerrarDialogo')">Cerrar</v-btn>
-                <v-btn color="success" variant="flat" size="small" @click="actualizarPaciente()"    :loading="loadingActualizar">Actualizar</v-btn>
+                <v-btn color="success" variant="flat" size="small" @click="actualizarPaciente()"
+                    :loading="loadingActualizar">Actualizar</v-btn>
             </v-card-actions>
         </v-card>
     </div>
@@ -86,13 +98,24 @@
                 datosPaciente: [],
                 oficios: [],
                 loading: false,
-                loadingActualizar: false
+                loadingActualizar: false,
+                empresas: [],
+                sedes: []
 
             }
         },
 
+        watch: {
+            'datosPaciente.empresa_id'(nuevoValor) {
+                if (nuevoValor) {
+                    this.listarSedes();
+                }
+            },
+        },
+
         mounted() {
             this.listarOficios()
+            this.listarEmpresas();
         },
 
         methods: {
@@ -116,12 +139,11 @@
                 }
             },
 
-            async actualizarPaciente()
-            {
+            async actualizarPaciente() {
                 const data = {
                     user_id: this.datosUsuarios.id,
-                    ...this.datosUsuarios,
-                    ...this.datosPaciente
+                    ...this.datosPaciente,
+                    ...this.datosUsuarios
                 }
                 this.loadingActualizar = true;
                 try {
@@ -134,8 +156,30 @@
                 } finally {
                     this.loadingActualizar = false;
                 }
-            }
+            },
+
+            listarEmpresas() {
+                this.$axios.get('/empresas/listarActivas').then((res) => {
+                    this.empresas = res.data
+                }).catch((error) => {
+                    console.log(error.response.data.error)
+                })
+            },
+
+            async listarSedes() {
+                this.loading = true;
+                try {
+                    const response = await this.$axios.get(
+                        `/sedes/listar-sede-empresa/${this.datosPaciente.empresa_id}`);
+                    this.sedes = response.data;
+                } catch (error) {
+                    console.error('Error al obtener las sedes', error);
+                } finally {
+                    this.loading = false;
+                }
+            },
 
         }
+
     }
 </script>

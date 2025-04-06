@@ -32,6 +32,7 @@ export default defineNuxtPlugin((nuxtApp) => {
                     { title: 'Sedes', icon: 'mdi-home-group', permission: 'sedes.vista', to: '/sedes' },
                     { title: 'Empresas', icon: 'mdi-office-building', permission: '', to: '/empresas' },
                     { title: 'Oficios', icon: 'mdi-briefcase-variant', permission: 'oficios.menu', to: '/oficios' },
+                    { title: 'Dependencias', icon: 'mdi-professional-hexagon', permission: 'dependencias.menu', to: '/dependencias' },
                 ]
             },
             {
