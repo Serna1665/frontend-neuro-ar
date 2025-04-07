@@ -3,7 +3,14 @@
         <v-row justify="center">
             <v-col cols="12" md="12" class="text-center">
                 <v-progress-circular v-if="loading" indeterminate color="primary" />
-                <v-img v-else-if="imageUrl" :src="imageUrl" contain max-height="700" />
+
+                <template v-else-if="imageUrl">
+                    <v-img :src="imageUrl" contain max-height="700" class="mb-4" />
+                    <v-btn href="https://imagenes.neuroar.com.co/static/paciente9.pdf" target="_blank" color="red" variant="elevated">
+                        Ver PDF de Resultados
+                    </v-btn>
+                </template>
+
                 <v-alert v-else type="error">No se encontró la imagen.</v-alert>
             </v-col>
         </v-row>
