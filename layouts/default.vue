@@ -80,6 +80,9 @@
                     <v-list-item to="" component="RouterLink">
                         <v-list-item-title>Mi Perfil</v-list-item-title>
                     </v-list-item>
+                    <v-list-item to="/actualizacionDatos/actualizacionDatos" >
+                        <v-list-item-title>Actualizar datos</v-list-item-title>
+                    </v-list-item>
                     <v-list-item to="/" component="RouterLink" @click="cerrarSesion">
                         <v-list-item-title>Cerrar Sesión</v-list-item-title>
                     </v-list-item>

@@ -119,7 +119,7 @@
       });
   
       success.value = 'Contraseña actualizada correctamente. Serás redirigido al login.';
-      setTimeout(() => router.push('/login'), 3000);
+      setTimeout(() => router.push('/'), 3000);
     } catch (err) {
       error.value = err.response?.data?.message || 'Error al actualizar la contraseña.';
     } finally {
