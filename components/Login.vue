@@ -73,6 +73,11 @@
                                     <v-btn variant="tonal" color="blue">Crear cuenta</v-btn>
                                 </NuxtLink>
                             </v-col>
+
+                              <!-- Botón: Ingresar -->
+                            <NuxtLink to="/recuperacionContrasena/validacionEmail" class="boton-crear-cuenta">
+                                    <v-btn color="white" variant="tonal" block>Recuperar contraseña</v-btn>
+                            </NuxtLink>
                         </v-row>
                     </v-form>
                 </v-col>
