@@ -6,7 +6,8 @@
 
                 <template v-else-if="imageUrl">
                     <v-img :src="imageUrl" contain max-height="700" class="mb-4" />
-                    <v-btn href="https://imagenes.neuroar.com.co/static/paciente9.pdf" target="_blank" color="red" variant="elevated">
+                    <v-btn href="https://imagenes.neuroar.com.co/static/paciente9.pdf" target="_blank" color="red"
+                        variant="elevated">
                         descargar reporte IA
                     </v-btn>
                 </template>
@@ -36,11 +37,12 @@ export default {
             this.loading = true
             try {
                 const authStore = useAuthStore()
-                const user = authStore.getUser
 
-                if (!user || !user.id) throw new Error('Usuario no autenticado')
+                const pacienteId = authStore.user?.paciente?.id
+                if (!pacienteId) throw new Error('Paciente no autenticado')
 
-                const response = await this.$axios.get(`/ver-imagen-usuario/${user.id}`)
+
+                const response = await this.$axios.get(`/ver-imagen-usuario/${pacienteId}`)
 
                 this.imageUrl = response.data.imagen_url || ''
             } catch (error) {
