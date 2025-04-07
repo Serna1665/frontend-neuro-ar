@@ -22,7 +22,7 @@
 
                 <template v-else-if="imageUrl">
                     <v-img :src="imageUrl" contain max-height="700" class="mb-4" />
-                    <v-btn href="https://imagenes.neuroar.com.co/pdf" target="_blank" color="red" variant="elevated">
+                    <v-btn href="https://imagenes.neuroar.com.co/static/paciente9.pdf" target="_blank" color="red" variant="elevated">
                         Ver PDF de Resultados
                     </v-btn>
                 </template>
