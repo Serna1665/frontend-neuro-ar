@@ -4,15 +4,22 @@
             <v-col cols="12" md="12" class="text-center">
                 <v-progress-circular v-if="loading" indeterminate color="primary" />
 
-                <template v-else-if="imageUrl">
-                    <v-img :src="imageUrl" contain max-height="700" class="mb-4" />
-                    <v-btn href="https://imagenes.neuroar.com.co/static/paciente9.pdf" target="_blank" color="red"
-                        variant="elevated">
-                        descargar reporte IA
+                <template v-else-if="imageUrls.length">
+                    <v-row>
+                        <v-col v-for="(url, index) in imageUrls" :key="index" cols="12" sm="6" md="4" class="mb-4">
+                            <v-img :src="url" contain aspect-ratio="1" />
+                        </v-col>
+                    </v-row>
+
+                    <v-btn :href="`https://imagenes.neuroar.com.co/static/paciente${pacienteId}.pdf`" target="_blank"
+                        color="red" variant="elevated">
+                        Descargar reporte IA
                     </v-btn>
                 </template>
 
-                <v-alert v-else type="error">No se encontró la imagen.</v-alert>
+                <v-alert v-else type="error">
+                    No se encontraron imágenes.
+                </v-alert>
             </v-col>
         </v-row>
     </v-container>
@@ -25,29 +32,31 @@ export default {
     name: 'WorkspaceJsonResultados',
     data() {
         return {
-            imageUrl: '',
+            imageUrls: [],
             loading: true,
+            pacienteId: null,
         }
     },
     async mounted() {
-        await this.fetchImage()
+        await this.fetchImages()
     },
     methods: {
-        async fetchImage() {
+        async fetchImages() {
             this.loading = true
             try {
                 const authStore = useAuthStore()
+                this.pacienteId = authStore.user?.paciente?.id
 
-                const pacienteId = authStore.user?.paciente?.id
-                if (!pacienteId) throw new Error('Paciente no autenticado')
+                if (!this.pacienteId) throw new Error('Paciente no autenticado')
 
+                const response = await this.$axios.post('/pacientes/imagenes-paciente', {
+                    user_id: this.pacienteId
+                })
 
-                const response = await this.$axios.get(`/ver-imagen-usuario/${pacienteId}`)
-
-                this.imageUrl = response.data.imagen_url || ''
+                this.imageUrls = response.data.imagenes || []
             } catch (error) {
-                console.error('Error al obtener la imagen:', error)
-                this.imageUrl = ''
+                console.error('Error al obtener las imágenes:', error)
+                this.imageUrls = []
             } finally {
                 this.loading = false
             }
