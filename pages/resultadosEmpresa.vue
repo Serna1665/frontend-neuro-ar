@@ -27,10 +27,15 @@
                         </v-col>
                     </v-row>
 
-                    <v-btn :href="`https://imagenes.neuroar.com.co/static/paciente${selectedPaciente}.pdf`"
+                    <v-btn href="https://imagenes.neuroar.com.co/static/paciente9.pdf" target="_blank" color="red"
+                        variant="elevated">
+                        descargar reporte IA
+                    </v-btn>
+
+                    <!-- <v-btn :href="`https://imagenes.neuroar.com.co/static/paciente${selectedPaciente}.pdf`"
                         target="_blank" color="red" variant="elevated">
                         Descargar reporte IA
-                    </v-btn>
+                    </v-btn> -->
                 </template>
 
                 <v-alert v-else-if="selectedPaciente === null" type="info">
@@ -54,7 +59,7 @@ export default {
         return {
             pacientes: [],
             selectedPaciente: null,
-            imageUrls: [], // Ahora es array en lugar de string
+            imageUrls: [],
             loadingPacientes: false,
             loadingImage: false,
         }
@@ -80,7 +85,7 @@ export default {
                 }
 
                 console.log(user, 'usuario');
-                
+
 
                 const response = await this.$axios.get(`/pacientes-empresa/${user.id}`)
                 this.pacientes = response.data.map(p => ({
