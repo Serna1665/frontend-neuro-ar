@@ -35,7 +35,7 @@
                     <v-col>
                         <v-file-input label="Adjuntar archivos" v-model="adjuntos.archivo" chips multiple
                             variant="outlined" density="comfortable" prepend-icon="mdi-paperclip" :rules="archivoRules"
-                            show-size closable accept=".pdf,.png,.jpg,.jpeg,.doc,.docx,.xls,.xlsx"
+                            show-size closable accept=".pdf,.png,.jpg,.jpeg"
                             :disabled="!adjuntos.tipo_adjunto_id" />
                     </v-col>
                 </v-card-text>
