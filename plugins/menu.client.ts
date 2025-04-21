@@ -30,10 +30,21 @@ export default defineNuxtPlugin((nuxtApp) => {
                 icon: 'mdi-cog',
                 permission: '',
                 children: [
+                    { title: 'Clientes', icon: 'mdi-office-building', permission: '', to: '/empresas' },
                     { title: 'Sedes', icon: 'mdi-home-group', permission: 'sedes.vista', to: '/sedes' },
-                    { title: 'Empresas', icon: 'mdi-office-building', permission: '', to: '/empresas' },
                     { title: 'Oficios', icon: 'mdi-briefcase-variant', permission: 'oficios.menu', to: '/oficios' },
-                    { title: 'Dependencias', icon: 'mdi-professional-hexagon', permission: 'dependencias.menu', to: '/dependencias' },
+                    { title: 'Dependencias', icon: 'mdi-tag-arrow-down', permission: 'dependencias.menu', to: '/dependencias' },
+                    { title: 'Categoria Adjuntos', icon: 'mdi-book-cog', permission: 'categoria.menu', to: '/Adjuntos/CategoriaAdjuntos' },
+                    { title: 'Tipo Adjuntos', icon: 'mdi-folder-cog', permission: 'tipo.adjuntos.menu', to: '/Adjuntos/TipoAdjuntos' },
+                ]
+            },
+            {
+                title: 'Carga Adjuntos',
+                icon: 'mdi-attachment',
+                permission: 'carga.adjuntos.menu',
+                children: [
+                    { title: 'Carga Adjuntos', icon: 'mdi-attachment-plus', permission: 'carga.adjuntos.menu', to: '/Adjuntos/CargaAdjuntos' },
+                    { title: 'Visualizar Adjuntos', icon: 'mdi-attachment-plus', permission: 'carga.adjuntos.menu', to: '/Adjuntos/adjuntoPaciente' },
                 ]
             },
             {
