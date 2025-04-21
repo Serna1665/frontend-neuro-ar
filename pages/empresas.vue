@@ -6,7 +6,7 @@
                     <div class="d-flex align-center">
                         <img src="/public/imagenes/neuroar.png" alt="Logo" height="70px" width="70px">
                         <v-divider inset vertical class="ml-6"></v-divider>
-                        <strong class="ml-4 text-h5 font-weight-bold">Empresas</strong>
+                        <strong class="ml-4 text-h5 font-weight-bold">Clientes</strong>
                     </div>
                 </div>
             </v-card-title>
