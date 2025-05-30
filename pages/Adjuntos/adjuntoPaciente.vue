@@ -24,7 +24,8 @@
                     </v-col>
                 </v-row>
 
-                <v-data-table :items="adjuntosPacientes" v-if="adjuntosPacientes.length > 0" :headers="headers">
+                <v-data-table :items="adjuntosPacientes" v-if="adjuntosPacientes.length > 0" :headers="headers"
+                    :loading="loading">
 
                     <template v-slot:[`item.nombrePaciente`]="{ item }">
                         <div>
@@ -39,6 +40,12 @@
                     <template v-slot:[`item.adjunto`]="{ item }">
                         <v-btn icon @click="descargarAdjunto(item.id)" color="primary" size="small">
                             <v-icon>mdi-download</v-icon>
+                            <v-tooltip activator="parent" location="bottom">Descargar Adjunto</v-tooltip>
+                        </v-btn>
+
+                        <v-btn icon color="red" size="small" @click="eliminarAdjunto(item.id)">
+                            <v-icon>mdi-delete</v-icon>
+                            <v-tooltip activator="parent" location="bottom">Eliminar Adjunto</v-tooltip>
                         </v-btn>
                     </template>
 
@@ -56,6 +63,7 @@
                 pacientes: [],
                 pacienteSeleccionado: null,
                 adjuntosPacientes: [],
+                loading: false,
                 headers: [{
                         title: 'Nombre Paciente',
                         key: 'nombrePaciente'
@@ -114,23 +122,29 @@
             },
 
             listarAdjuntos() {
+                this.loading = true;
                 this.$axios.get('adjuntos/adjuntos-paciente/' + this.pacienteSeleccionado).then((res) => {
                     this.adjuntosPacientes = res.data
                 }).catch((error) => {
                     console.log(error.response.data.error)
-                })
+                }).finally(() => {
+                    this.loading = false;
+                });
             },
 
             async descargarAdjunto(id) {
+                this.loading = true;
                 try {
                     const response = await this.$axios.get(`/adjuntos/descarga-adjunto/${id}`, {
                         responseType: 'blob'
                     });
 
-                    const contentType = response.headers['content-type'];
+                    const contentType = response.headers['content-type'] || 'application/octet-stream';
+
                     const blob = new Blob([response.data], {
                         type: contentType
-                    }); 
+                    });
+
                     const url = window.URL.createObjectURL(blob);
 
                     const contentDisposition = response.headers['content-disposition'];
@@ -150,23 +164,48 @@
                         link.click();
                         document.body.removeChild(link);
                     }
-
                 } catch (error) {
                     console.error('Error al descargar el adjunto:', error);
                     this.$toast.error('No se pudo descargar el archivo.');
+                } finally {
+                    this.loading = false;
                 }
             },
 
-            limpiar()
-            {
-                this.adjuntosPacientes = []; 
-                this.pacienteSeleccionado = ''
-            }
 
+            limpiar() {
+                this.adjuntosPacientes = [];
+                this.pacienteSeleccionado = ''
+            },
+
+            async eliminarAdjunto(id) {
+                const result = await this.$swal.fire({
+                    title: '¿Estás seguro?',
+                    text: 'Eliminarás este adjunto',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: "#22bb33",
+                    confirmButtonText: 'Sí, eliminar',
+                    cancelButtonColor: "#d33",
+                    cancelButtonText: 'Cancelar',
+                });
+
+                if (result.isConfirmed) {
+                    this.loading = true;
+                    try {
+                        await this.$axios.delete(`/adjuntos/eliminar-adjunto/${id}`);
+                        this.$toast.success('Adjunto eliminado correctamente');
+                        this.listarAdjuntos();
+                    } catch (error) {
+                        console.error(error);
+                        this.$toast.error('Error al eliminar el adjunto');
+                    } finally {
+                        this.loading = false;
+                    }
+                }
+            },
         },
     }
 </script>
 
-<style>
-
-</style>
+<style></style>
