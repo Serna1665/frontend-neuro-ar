@@ -28,9 +28,9 @@ export default defineNuxtPlugin((nuxtApp) => {
             {
                 title: 'Configuración',
                 icon: 'mdi-cog',
-                permission: '',
+                permission: 'menu.configuracion',
                 children: [
-                    { title: 'Clientes', icon: 'mdi-office-building', permission: '', to: '/empresas' },
+                    { title: 'Clientes', icon: 'mdi-office-building', permission: 'empresas.vista', to: '/empresas' },
                     { title: 'Sedes', icon: 'mdi-home-group', permission: 'sedes.vista', to: '/sedes' },
                     { title: 'Oficios', icon: 'mdi-briefcase-variant', permission: 'oficios.menu', to: '/oficios' },
                     { title: 'Dependencias', icon: 'mdi-tag-arrow-down', permission: 'dependencias.menu', to: '/dependencias' },
